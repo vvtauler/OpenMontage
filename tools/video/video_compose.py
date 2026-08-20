@@ -33,6 +33,7 @@ from __future__ import annotations
 import json
 import hashlib
 import logging
+import re
 import shutil
 import subprocess
 import time
@@ -2508,7 +2509,7 @@ class VideoCompose(BaseTool):
                             promise_preservation["issues"].append(v)
 
                     # Detect silent downgrade: motion-led promise but <50% motion
-                    if (delivery_data.get("type") == "motion_led"
+                    if (delivery_data.get("promise_type") == "motion_led"
                             and motion_ratio < 0.5):
                         promise_preservation["silent_downgrade_detected"] = True
                         promise_preservation["issues"].append(
@@ -2649,21 +2650,46 @@ class VideoCompose(BaseTool):
             return ToolResult(success=False, error=f"Subtitle file not found: {subtitle_path}")
 
         style = inputs.get("subtitle_style", {})
-        ass_style = self._build_subtitle_style(style)
-        sub_escaped = str(subtitle_path.resolve()).replace("\\", "/").replace(":", "\\:")
         codec = inputs.get("codec", "libx264")
         crf = inputs.get("crf", 23)
+
+        # Burning an .srt directly through the `subtitles` filter converts it
+        # to ASS internally using libass's own default script resolution, not
+        # the real frame size — `force_style`'s FontSize is then scaled
+        # against that assumed resolution instead of the actual one. On a
+        # 9:16 short (1080x1920) that mismatch is large and non-uniform, so a
+        # reasonable FontSize (e.g. 54) renders as several-hundred-px text
+        # that blots out most of the frame. Writing our own minimal ASS with
+        # explicit PlayResX/PlayResY (matching the probed output frame) and
+        # baking the style into it removes the ambiguity — confirmed by
+        # comparing the two render paths on identical input.
+        generated_ass: Path | None = None
+        if subtitle_path.suffix.lower() == ".ass":
+            burn_path = subtitle_path
+        else:
+            width, height = self._probe_resolution(input_path)
+            width, height = width or 1920, height or 1080
+            generated_ass = output_path.parent / f".{output_path.stem}_subs.ass"
+            generated_ass.parent.mkdir(parents=True, exist_ok=True)
+            self._srt_to_ass(subtitle_path, style, width, height, generated_ass)
+            burn_path = generated_ass
+
+        sub_escaped = str(burn_path.resolve()).replace("\\", "/").replace(":", "\\:")
 
         cmd = [
             "ffmpeg", "-y",
             "-i", str(input_path),
-            "-vf", f"subtitles='{sub_escaped}':force_style='{ass_style}'",
+            "-vf", f"ass='{sub_escaped}'",
             "-c:v", codec, "-crf", str(crf),
             "-c:a", "copy",
             str(output_path),
         ]
 
-        self.run_command(cmd)
+        try:
+            self.run_command(cmd)
+        finally:
+            if generated_ass is not None and generated_ass.exists():
+                generated_ass.unlink()
 
         return ToolResult(
             success=True,
@@ -2673,6 +2699,84 @@ class VideoCompose(BaseTool):
             },
             artifacts=[str(output_path)],
         )
+
+    @staticmethod
+    def _hex_to_ass_color(value: str | None, default: str = "&H00FFFFFF") -> str:
+        """Convert a #RRGGBB / &HRRGGBB color into ASS's &H00BBGGRR format."""
+        if not value:
+            return default
+        hex_part = value.lstrip("#").replace("&H", "").replace("&h", "")
+        hex_part = hex_part.rjust(6, "0")[-6:]
+        try:
+            r, g, b = hex_part[0:2], hex_part[2:4], hex_part[4:6]
+            int(r, 16), int(g, 16), int(b, 16)
+        except ValueError:
+            return default
+        return f"&H00{b}{g}{r}".upper()
+
+    @staticmethod
+    def _parse_srt(srt_path: Path) -> list[tuple[str, str, str]]:
+        """Parse an SRT file into (ass_start, ass_end, ass_text) triples."""
+        content = srt_path.read_text(encoding="utf-8")
+        time_re = re.compile(
+            r"(\d{2}):(\d{2}):(\d{2})[,.](\d{3})\s*-->\s*(\d{2}):(\d{2}):(\d{2})[,.](\d{3})"
+        )
+
+        def fmt(h: str, m: str, s: str, ms: str) -> str:
+            centis = int(ms) // 10
+            return f"{int(h)}:{int(m):02d}:{int(s):02d}.{centis:02d}"
+
+        cues: list[tuple[str, str, str]] = []
+        for block in re.split(r"\n\s*\n", content.strip()):
+            lines = [l for l in block.strip().splitlines() if l.strip()]
+            if not lines:
+                continue
+            idx = 1 if lines[0].strip().isdigit() else 0
+            if idx >= len(lines):
+                continue
+            m = time_re.search(lines[idx])
+            if not m:
+                continue
+            g = m.groups()
+            text = "\\N".join(lines[idx + 1:]).strip()
+            if text:
+                cues.append((fmt(*g[0:4]), fmt(*g[4:8]), text))
+        return cues
+
+    def _srt_to_ass(
+        self, srt_path: Path, style: dict, width: int, height: int, ass_path: Path
+    ) -> Path:
+        """Write a minimal ASS file (explicit PlayRes) from an SRT + style dict."""
+        font = style.get("font", "DejaVu Sans")
+        font_size = style.get("font_size", 42)
+        primary = self._hex_to_ass_color(style.get("primary_color") or style.get("color"), "&H00FFFFFF")
+        outline_color = self._hex_to_ass_color(style.get("outline_color"), "&H00000000")
+        outline_width = style.get("outline_width", 2)
+        margin_v = style.get("margin_v", 40)
+        alignment = style.get("alignment", 2)
+        bold = -1 if style.get("bold", True) else 0
+
+        header = (
+            "[Script Info]\n"
+            "ScriptType: v4.00+\n"
+            "WrapStyle: 0\n"
+            f"PlayResX: {width}\nPlayResY: {height}\n"
+            "ScaledBorderAndShadow: yes\n\n"
+            "[V4+ Styles]\n"
+            "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, "
+            "BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, "
+            "BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\n"
+            f"Style: Default,{font},{font_size},{primary},&H000000FF,{outline_color},&H00000000,"
+            f"{bold},0,0,0,100,100,0,0,1,{outline_width},0,{alignment},40,40,{margin_v},1\n\n"
+            "[Events]\n"
+            "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n"
+        )
+        lines = [header]
+        for start, end, text in self._parse_srt(srt_path):
+            lines.append(f"Dialogue: 0,{start},{end},Default,,0,0,0,,{text}\n")
+
+        ass_path.write_text("".join(lines), encoding="utf-8")
+        return ass_path
 
     def _overlay(self, inputs: dict[str, Any]) -> ToolResult:
         """Composite overlay images/videos on top of base video."""
@@ -2838,6 +2942,24 @@ class VideoCompose(BaseTool):
                     resolved[k] = v
 
         return resolved
+
+    @staticmethod
+    def _probe_resolution(path: Path) -> tuple[int | None, int | None]:
+        """Return (width, height) of a video file's first video stream, or (None, None)."""
+        try:
+            proc = subprocess.run(
+                [
+                    "ffprobe", "-v", "error", "-select_streams", "v:0",
+                    "-show_entries", "stream=width,height",
+                    "-of", "csv=s=x:p=0", str(path),
+                ],
+                capture_output=True, text=True, timeout=30,
+            )
+            parts = [p for p in proc.stdout.strip().split("x") if p]
+            w_str, h_str = parts[0], parts[1]
+            return int(w_str), int(h_str)
+        except Exception:
+            return None, None
 
     @staticmethod
     def _build_subtitle_style(style: dict) -> str:
