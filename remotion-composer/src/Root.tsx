@@ -16,6 +16,11 @@ import { ProductReveal, ProductRevealProps } from "./components/ProductReveal";
 import { CaptionOverlay, WordCaption } from "./components/CaptionOverlay";
 import { CollageBurst, CollageBurstProps } from "./CollageBurst";
 import { LyricOverlay, LyricOverlayProps } from "./LyricOverlay";
+import {
+  SocialClip,
+  SocialClipProps,
+  calculateSocialClipMetadata,
+} from "./components/SocialClip";
 
 // ---------------------------------------------------------------------------
 // Theme System — prevents every video from looking like dark fintech
@@ -295,6 +300,23 @@ export const Root: React.FC = () => {
           lyrics: [],
           bottomY: 0.88,
         } as LyricOverlayProps}
+      />
+      <Composition
+        id="SocialClip"
+        component={SocialClip}
+        durationInFrames={30 * 30}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{
+          videoSrc: "",
+          trimStartSeconds: 0,
+          trimEndSeconds: 10,
+          captionsFile: "",
+          watermarkSrc: "",
+          cropMode: "center",
+        } as SocialClipProps}
+        calculateMetadata={calculateSocialClipMetadata}
       />
       <Composition
         id="EndTag"
