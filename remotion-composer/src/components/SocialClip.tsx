@@ -277,6 +277,15 @@ export const SocialClip: React.FC<SocialClipProps> = ({
   const ctaDurationFrames = Math.round(CTA_DURATION_SECONDS * fps);
   const resolvedSrc = resolveAsset(videoSrc);
 
+  // Guard against an unset/empty videoSrc (e.g. this composition's raw
+  // defaultProps, before real props are loaded in the Studio): mounting
+  // <Video src=""> throws a MediaPlaybackError that takes down the whole
+  // Studio preview, hiding the composition list behind it — not just this
+  // one clip. Bail out to a blank frame instead of ever reaching <Video>.
+  if (!videoSrc) {
+    return <AbsoluteFill style={{ backgroundColor: "#0E0E11" }} />;
+  }
+
   return (
     <AbsoluteFill style={{ backgroundColor: "#0E0E11" }}>
       {/* Fondo de marca y logo — persistentes durante todo el clip (vídeo +

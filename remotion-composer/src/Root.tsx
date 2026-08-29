@@ -21,6 +21,13 @@ import {
   SocialClipProps,
   calculateSocialClipMetadata,
 } from "./components/SocialClip";
+import {
+  short1HookFixture,
+  short2ObjetoFixture,
+  short3HistoriaFixture,
+  short4ConsecuenciasFixture,
+  short5LegadoFixture,
+} from "./fixtures/video002-shorts";
 
 // ---------------------------------------------------------------------------
 // Theme System — prevents every video from looking like dark fintech
@@ -317,6 +324,61 @@ export const Root: React.FC = () => {
           cropMode: "center",
         } as SocialClipProps}
         calculateMetadata={calculateSocialClipMetadata}
+      />
+      {/* Shorts reales del vídeo 002 (arco compuesto mongol) — montaje sobre
+          narración/imágenes/motion graphics ya generados para el vídeo largo
+          (props/video002.json), sin generar nada nuevo. Ver
+          src/fixtures/video002-shorts.ts y el guion técnico en la bóveda
+          Obsidian ("10-Redes Sociales/002 - Shorts del arco mongol.md"). */}
+      <Composition
+        id="Short002-01-Hook"
+        component={Explainer}
+        durationInFrames={30 * 30}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={short1HookFixture}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Short002-02-Objeto"
+        component={Explainer}
+        durationInFrames={30 * 30}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={short2ObjetoFixture}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Short002-03-Historia"
+        component={Explainer}
+        durationInFrames={30 * 30}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={short3HistoriaFixture}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Short002-04-Consecuencias"
+        component={Explainer}
+        durationInFrames={30 * 30}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={short4ConsecuenciasFixture}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Short002-05-Legado"
+        component={Explainer}
+        durationInFrames={30 * 30}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={short5LegadoFixture}
+        calculateMetadata={calculateMetadata}
       />
       <Composition
         id="EndTag"
