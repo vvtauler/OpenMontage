@@ -45,6 +45,9 @@ export interface AnimeSceneProps {
   lightingFrom?: string;
   /** Ending gradient color for animated lighting shift */
   lightingTo?: string;
+  /** Anchor point for objectFit:"cover" cropping and the camera motion
+   * transform above it — e.g. { x: 65, y: 40 } or "top". Default: centered. */
+  focalPoint?: string | { x: number; y: number };
   /**
    * Actual scene duration in seconds.
    * CRITICAL: useVideoConfig().durationInFrames returns the FULL composition
@@ -69,6 +72,21 @@ const AnimeVignette: React.FC = () => (
 );
 
 // ---------------------------------------------------------------------------
+// Focal point — mirrors resolveObjectPosition in ../Explainer.tsx (kept local
+// to avoid a cross-file import for one four-line helper).
+// ---------------------------------------------------------------------------
+
+function resolveObjectPosition(
+  position?: string | { x: number; y: number }
+): string {
+  if (!position) return "50% 50%";
+  if (typeof position === "string") return position;
+  const x = Math.max(0, Math.min(100, position.x));
+  const y = Math.max(0, Math.min(100, position.y));
+  return `${x}% ${y}%`;
+}
+
+// ---------------------------------------------------------------------------
 // Camera motion calculator
 // ---------------------------------------------------------------------------
 
@@ -84,38 +102,43 @@ function useCameraMotion(animation: CameraMotion, effectiveDuration: number) {
   let translateX = 0;
   let translateY = 0;
 
+  // Amplitudes raised ~55-70% over the original values (29 ago 2026) — the
+  // previous scale/translate deltas were too subtle to read as motion at
+  // normal viewing distance. Scale is bumped alongside translate so the
+  // extra pan distance stays inside the overscan margin (never reveals the
+  // image edge/background behind it).
   switch (animation) {
     case "zoom-in":
-      scale = 1 + progress * 0.15;
+      scale = 1 + progress * 0.26;
       break;
     case "zoom-out":
-      scale = 1.15 - progress * 0.15;
+      scale = 1.26 - progress * 0.26;
       break;
     case "pan-left":
-      translateX = interpolate(progress, [0, 1], [35, -35]);
-      scale = 1.12;
+      translateX = interpolate(progress, [0, 1], [55, -55]);
+      scale = 1.18;
       break;
     case "pan-right":
-      translateX = interpolate(progress, [0, 1], [-35, 35]);
-      scale = 1.12;
+      translateX = interpolate(progress, [0, 1], [-55, 55]);
+      scale = 1.18;
       break;
     case "ken-burns":
-      scale = 1 + progress * 0.18;
-      translateX = interpolate(progress, [0, 1], [0, -22]);
-      translateY = interpolate(progress, [0, 1], [0, -14]);
+      scale = 1 + progress * 0.3;
+      translateX = interpolate(progress, [0, 1], [0, -38]);
+      translateY = interpolate(progress, [0, 1], [0, -24]);
       break;
     case "drift-up":
-      translateY = interpolate(progress, [0, 1], [22, -22]);
-      scale = 1.1;
+      translateY = interpolate(progress, [0, 1], [38, -38]);
+      scale = 1.18;
       break;
     case "drift-down":
-      translateY = interpolate(progress, [0, 1], [-22, 22]);
-      scale = 1.1;
+      translateY = interpolate(progress, [0, 1], [-38, 38]);
+      scale = 1.18;
       break;
     case "parallax":
-      translateY = interpolate(progress, [0, 1], [14, -14]);
-      translateX = interpolate(progress, [0, 1], [6, -6]);
-      scale = 1.12;
+      translateY = interpolate(progress, [0, 1], [26, -26]);
+      translateX = interpolate(progress, [0, 1], [12, -12]);
+      scale = 1.18;
       break;
     case "static":
     default:
@@ -141,6 +164,7 @@ export const AnimeScene: React.FC<AnimeSceneProps> = ({
   vignette = true,
   lightingFrom,
   lightingTo,
+  focalPoint,
   sceneDurationSeconds,
 }) => {
   const frame = useCurrentFrame();
@@ -251,6 +275,7 @@ export const AnimeScene: React.FC<AnimeSceneProps> = ({
               width: "100%",
               height: "100%",
               objectFit: "cover",
+              objectPosition: resolveObjectPosition(focalPoint),
               opacity: getOpacity(i),
               transform: `scale(${scale}) translate(${translateX}px, ${translateY}px)`,
               willChange: "transform, opacity",

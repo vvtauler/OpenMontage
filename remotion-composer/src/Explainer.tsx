@@ -25,6 +25,8 @@ import { StatReveal } from "./components/StatReveal";
 import { HeroTitle } from "./components/HeroTitle";
 import { AnimeScene } from "./components/AnimeScene";
 import type { CameraMotion } from "./components/AnimeScene";
+import { ParallaxScene } from "./components/ParallaxScene";
+import type { ParallaxLayer, ParallaxMotion } from "./components/ParallaxScene";
 import { TerminalScene } from "./components/TerminalScene";
 import type { TerminalStep } from "./components/TerminalScene";
 import { ScreenshotScene } from "./components/ScreenshotScene";
@@ -246,6 +248,10 @@ interface Cut {
   vignette?: boolean;
   lightingFrom?: string;
   lightingTo?: string;
+  // Parallax scene props (type: "parallax_scene") — true depth parallax,
+  // 2+ layers moving at different rates. See components/ParallaxScene.tsx.
+  layers?: ParallaxLayer[];
+  parallaxIntensity?: number;
   // Terminal scene props (type: "terminal_scene")
   steps?: TerminalStep[];
   terminalTitle?: string;
@@ -328,12 +334,38 @@ const Vignette: React.FC = () => (
 );
 
 // ---------------------------------------------------------------------------
+// Focal point — resolves cut.transform.position (previously declared but
+// never read anywhere in this file, confirmed 29 ago 2026) into a CSS
+// object-position value. Without this, objectFit:"cover" always crops to
+// dead-center, so an off-center subject gets clipped as soon as Ken Burns
+// zooms/pans — this is the anchor the crop and camera motion are measured
+// from, not an extra motion effect of its own.
+// ---------------------------------------------------------------------------
+
+function resolveObjectPosition(
+  position?: string | { x: number; y: number }
+): string {
+  if (!position) return "50% 50%";
+  if (typeof position === "string") return position;
+  const x = Math.max(0, Math.min(100, position.x));
+  const y = Math.max(0, Math.min(100, position.y));
+  return `${x}% ${y}%`;
+}
+
+// ---------------------------------------------------------------------------
 // Enhanced Image Scene — spring physics, parallax, variety
 // ---------------------------------------------------------------------------
 
-const ImageScene: React.FC<{ src: string; animation?: string }> = ({
+const ImageScene: React.FC<{
+  src: string;
+  animation?: string;
+  /** Anchor point for objectFit:"cover" cropping and the camera motion
+   * transform above it — e.g. { x: 65, y: 40 } or "top". Default: centered. */
+  focalPoint?: string | { x: number; y: number };
+}> = ({
   src,
   animation,
+  focalPoint,
 }) => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
@@ -359,25 +391,28 @@ const ImageScene: React.FC<{ src: string; animation?: string }> = ({
     extrapolateRight: "clamp",
   });
 
+  // Amplitudes raised ~55-70% over the original values (29 ago 2026) — see
+  // matching note in components/AnimeScene.tsx useCameraMotion. Scale grows
+  // alongside translate so the wider pan/drift never reveals the image edge.
   if (anim === "zoom-in") {
-    scale = 1 + progress * 0.18;
+    scale = 1 + progress * 0.28;
   } else if (anim === "zoom-out") {
-    scale = 1.18 - progress * 0.18;
+    scale = 1.28 - progress * 0.28;
   } else if (anim === "pan-left") {
-    translateX = interpolate(progress, [0, 1], [40, -40]);
-    scale = 1.15;
+    translateX = interpolate(progress, [0, 1], [65, -65]);
+    scale = 1.2;
   } else if (anim === "pan-right") {
-    translateX = interpolate(progress, [0, 1], [-40, 40]);
-    scale = 1.15;
+    translateX = interpolate(progress, [0, 1], [-65, 65]);
+    scale = 1.2;
   } else if (anim === "ken-burns" || anim === "ken-burns-slow-zoom") {
     // Cinematic Ken Burns: gentle zoom + diagonal drift
-    scale = 1 + progress * 0.22;
-    translateX = interpolate(progress, [0, 1], [0, -25]);
-    translateY = interpolate(progress, [0, 1], [0, -15]);
+    scale = 1 + progress * 0.32;
+    translateX = interpolate(progress, [0, 1], [0, -42]);
+    translateY = interpolate(progress, [0, 1], [0, -26]);
   } else if (anim === "parallax") {
     // Subtle parallax — foreground moves faster
-    translateY = interpolate(progress, [0, 1], [15, -15]);
-    scale = 1.1;
+    translateY = interpolate(progress, [0, 1], [28, -28]);
+    scale = 1.16;
   }
   // "static" or "none" → just display
 
@@ -389,6 +424,7 @@ const ImageScene: React.FC<{ src: string; animation?: string }> = ({
           width: "100%",
           height: "100%",
           objectFit: "cover",
+          objectPosition: resolveObjectPosition(focalPoint),
           opacity: fadeIn * fadeOut,
           transform: `scale(${scale}) translate(${translateX}px, ${translateY}px)`,
           willChange: "transform, opacity",
@@ -699,6 +735,20 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
     );
   }
 
+  // --- Parallax scene (true depth parallax, 2+ layers) ---
+  if (cut.type === "parallax_scene" && cut.layers && cut.layers.length > 0) {
+    return (
+      <ParallaxScene
+        layers={cut.layers}
+        animation={(cut.animation as ParallaxMotion) || "push-in"}
+        intensity={cut.parallaxIntensity ?? 1}
+        vignette={cut.vignette ?? true}
+        backgroundColor={cut.backgroundColor}
+        sceneDurationSeconds={cut.out_seconds - cut.in_seconds}
+      />
+    );
+  }
+
   // --- Anime scene (multi-image crossfade + particles) ---
   if (cut.type === "anime_scene" && cut.images && cut.images.length > 0) {
     return (
@@ -713,6 +763,7 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
         vignette={cut.vignette ?? true}
         lightingFrom={cut.lightingFrom}
         lightingTo={cut.lightingTo}
+        focalPoint={cut.transform?.position}
         sceneDurationSeconds={cut.out_seconds - cut.in_seconds}
       />
     );
@@ -722,7 +773,9 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
   const animation = cut.animation || cut.transform?.animation;
 
   if (cut.source && isImage(cut.source)) {
-    return maybeWrapWithBg(<ImageScene src={cut.source} animation={animation} />);
+    return maybeWrapWithBg(
+      <ImageScene src={cut.source} animation={animation} focalPoint={cut.transform?.position} />,
+    );
   }
 
   if (cut.source && isVideo(cut.source)) {
@@ -741,7 +794,9 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
 
   // Final fallback — try as image if source exists, otherwise show text_card
   if (cut.source) {
-    return maybeWrapWithBg(<ImageScene src={cut.source} animation={animation} />);
+    return maybeWrapWithBg(
+      <ImageScene src={cut.source} animation={animation} focalPoint={cut.transform?.position} />,
+    );
   }
 
   // No source, no type — render as text card with cut id as fallback
