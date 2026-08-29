@@ -107,6 +107,7 @@ export const PhotoInsert: React.FC<PhotoInsertProps> = ({
               style={{
                 display: "flex",
                 flexDirection: "column",
+                alignItems: "center",
                 gap: 3,
                 padding: "10px 6px 20px 6px",
               }}
@@ -119,6 +120,7 @@ export const PhotoInsert: React.FC<PhotoInsertProps> = ({
                     fontSize: 19,
                     color: CAPTION_INK,
                     lineHeight: 1.3,
+                    textAlign: "center",
                   }}
                 >
                   {caption}
@@ -132,6 +134,7 @@ export const PhotoInsert: React.FC<PhotoInsertProps> = ({
                     fontSize: 13,
                     color: ATTRIBUTION_INK,
                     lineHeight: 1.3,
+                    textAlign: "center",
                   }}
                 >
                   {attribution}
