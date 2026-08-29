@@ -30,6 +30,7 @@ import type { ParallaxLayer, ParallaxMotion } from "./components/ParallaxScene";
 import { ListReveal } from "./components/ListReveal";
 import type { ListRevealItem } from "./components/ListReveal";
 import { PhotoInsert } from "./components/PhotoInsert";
+import { MonumentalTitle } from "./components/MonumentalTitle";
 import { TerminalScene } from "./components/TerminalScene";
 import type { TerminalStep } from "./components/TerminalScene";
 import { ScreenshotScene } from "./components/ScreenshotScene";
@@ -266,7 +267,7 @@ interface Cut {
 }
 
 interface Overlay {
-  type: "section_title" | "stat_reveal" | "hero_title" | "provider_chip" | "list_reveal" | "photo_insert";
+  type: "section_title" | "stat_reveal" | "hero_title" | "provider_chip" | "list_reveal" | "photo_insert" | "monumental_title";
   in_seconds: number;
   out_seconds: number;
   text?: string;
@@ -870,6 +871,15 @@ const OverlayRenderer: React.FC<{ overlay: Overlay }> = ({ overlay }) => {
         position={(overlay.position as "left" | "right") || "right"}
         width={overlay.width}
         sceneDurationSeconds={overlay.out_seconds - overlay.in_seconds}
+      />
+    );
+  }
+  if (overlay.type === "monumental_title") {
+    return (
+      <MonumentalTitle
+        title={overlay.text ?? ""}
+        subtitle={overlay.subtitle}
+        position={(overlay.position as "center" | "bottom-center") || "bottom-center"}
       />
     );
   }
