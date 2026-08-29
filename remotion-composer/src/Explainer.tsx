@@ -282,6 +282,7 @@ interface Overlay {
   // photo_insert — real photograph/document overlaid on the background
   source?: string;
   caption?: string;
+  attribution?: string;
   width?: number;
 }
 
@@ -865,6 +866,7 @@ const OverlayRenderer: React.FC<{ overlay: Overlay }> = ({ overlay }) => {
       <PhotoInsert
         source={overlay.source}
         caption={overlay.caption}
+        attribution={overlay.attribution}
         position={(overlay.position as "left" | "right") || "right"}
         width={overlay.width}
         sceneDurationSeconds={overlay.out_seconds - overlay.in_seconds}

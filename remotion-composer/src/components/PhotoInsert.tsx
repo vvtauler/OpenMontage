@@ -20,14 +20,17 @@ const { fontFamily: montserrat } = loadMontserrat("normal", {
 // AI-generated element.
 const FRAME_WHITE = "#FAFAF7";
 const CAPTION_INK = "#2D3238"; // Acero/Hierro (manual §4) — dark text on white
+const ATTRIBUTION_INK = "#6B7280"; // muted — fine-print rights/credit line
 
 export interface PhotoInsertProps {
   /** Real photograph or document — museum piece, manuscript page, a cited
    * researcher's portrait, etc. Must already be rights-cleared; this
    * component only handles presentation, never sourcing/licensing. */
   source: string;
-  /** Credit line — source/license, e.g. "Museo de Cluny — dominio público". */
+  /** Photo title/description — top line, larger. E.g. "Arco compuesto mongol, s. XIII". */
   caption?: string;
+  /** Rights/credit line — bottom line, smaller. E.g. "Museo de Cluny — dominio público". */
+  attribution?: string;
   position?: "left" | "right";
   /** Insert width in px. Default 420. */
   width?: number;
@@ -42,10 +45,12 @@ const SAFE_MARGIN = 90;
 export const PhotoInsert: React.FC<PhotoInsertProps> = ({
   source,
   caption,
+  attribution,
   position = "right",
   width = 420,
   sceneDurationSeconds,
 }) => {
+  const hasFooter = Boolean(caption || attribution);
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const durationInFrames = Math.round(sceneDurationSeconds * fps);
@@ -88,7 +93,7 @@ export const PhotoInsert: React.FC<PhotoInsertProps> = ({
         <div
           style={{
             background: FRAME_WHITE,
-            padding: `14px 14px ${caption ? 0 : 14}px 14px`,
+            padding: `14px 14px ${hasFooter ? 0 : 14}px 14px`,
             borderRadius: 2,
             boxShadow: "0 14px 34px rgba(0,0,0,0.6)",
           }}
@@ -97,26 +102,41 @@ export const PhotoInsert: React.FC<PhotoInsertProps> = ({
             src={resolveAsset(source)}
             style={{ width: "100%", display: "block" }}
           />
-          {caption && (
+          {hasFooter && (
             <div
               style={{
-                minHeight: 64,
                 display: "flex",
-                alignItems: "center",
+                flexDirection: "column",
+                gap: 3,
                 padding: "10px 6px 20px 6px",
               }}
             >
-              <div
-                style={{
-                  fontFamily: montserrat,
-                  fontWeight: 500,
-                  fontSize: 16,
-                  color: CAPTION_INK,
-                  lineHeight: 1.35,
-                }}
-              >
-                {caption}
-              </div>
+              {caption && (
+                <div
+                  style={{
+                    fontFamily: montserrat,
+                    fontWeight: 600,
+                    fontSize: 19,
+                    color: CAPTION_INK,
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {caption}
+                </div>
+              )}
+              {attribution && (
+                <div
+                  style={{
+                    fontFamily: montserrat,
+                    fontWeight: 500,
+                    fontSize: 13,
+                    color: ATTRIBUTION_INK,
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {attribution}
+                </div>
+              )}
             </div>
           )}
         </div>
