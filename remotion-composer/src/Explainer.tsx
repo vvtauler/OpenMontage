@@ -890,7 +890,7 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
         animation={(cut.animation as ParallaxMotion) || "push-in"}
         intensity={cut.parallaxIntensity ?? 1}
         vignette={cut.vignette ?? true}
-        backgroundColor={cut.backgroundColor}
+        backgroundColor={cut.backgroundColor ?? theme.backgroundColor}
         sceneDurationSeconds={cut.out_seconds - cut.in_seconds}
       />
     );
@@ -906,7 +906,7 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
         particleColor={cut.particleColor}
         particleCount={cut.particleCount}
         particleIntensity={cut.particleIntensity}
-        backgroundColor={cut.backgroundColor}
+        backgroundColor={cut.backgroundColor ?? theme.backgroundColor}
         vignette={cut.vignette ?? true}
         lightingFrom={cut.lightingFrom}
         lightingTo={cut.lightingTo}
@@ -928,7 +928,7 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
         transitionIn={cut.transition_in}
         transitionOut={cut.transition_out}
         zoomOrigin={cut.transform?.zoomOrigin}
-        backgroundColor={cut.backgroundColor}
+        backgroundColor={cut.backgroundColor ?? theme.backgroundColor}
         zoomScale={cut.transform?.scale}
       />,
     );
@@ -943,7 +943,7 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
         transitionOut={cut.transition_out}
         transitionDuration={cut.transition_duration}
         sceneDurationSeconds={cut.out_seconds - cut.in_seconds}
-        backgroundColor={cut.backgroundColor}
+        backgroundColor={cut.backgroundColor ?? theme.backgroundColor}
         fit={cut.videoFit}
         playbackRate={cut.playbackRate}
         zoomScale={cut.transform?.scale}
@@ -961,7 +961,7 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
         transitionIn={cut.transition_in}
         transitionOut={cut.transition_out}
         zoomOrigin={cut.transform?.zoomOrigin}
-        backgroundColor={cut.backgroundColor}
+        backgroundColor={cut.backgroundColor ?? theme.backgroundColor}
         zoomScale={cut.transform?.scale}
       />,
     );

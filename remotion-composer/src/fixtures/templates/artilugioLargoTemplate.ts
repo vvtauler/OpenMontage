@@ -13,11 +13,17 @@ import { ExplainerProps } from "../../Explainer";
 // re-renderizar ese vídeo en concreto.
 //
 // FIJO en todo vídeo largo del canal (no cambiar sin decisión explícita):
-//   - Sin watermarkSrc, sin brandBackground, sin themeConfig, sin cta_card
-//     final: el vídeo largo NO lleva marca de agua persistente ni tarjeta
-//     de cierre — eso es un tratamiento propio de los shorts verticales
-//     (ver artilugioShortTemplate.ts). El "suscríbete" y el end-screen van
-//     por las herramientas nativas de YouTube, no quemados en el vídeo.
+//   - Sin watermarkSrc, sin brandBackground, sin cta_card final: el vídeo
+//     largo NO lleva marca de agua persistente ni tarjeta de cierre — eso
+//     es un tratamiento propio de los shorts verticales (ver
+//     artilugioShortTemplate.ts). El "suscríbete" y el end-screen van por
+//     las herramientas nativas de YouTube, no quemados en el vídeo.
+//   - themeConfig.backgroundColor: "#000000" — sin esto, cualquier corte
+//     sin `backgroundColor` propio revela el navy genérico de Remotion
+//     (#0F172A) en sus fundidos (fade_black de entrada/salida, y el resto
+//     final de un fadeOut que no llega a opacity 0) — se ve especialmente
+//     en el fundido de apertura/cierre del vídeo. No se toca ningún otro
+//     campo del tema (fuentes, acentos...), solo este.
 //   - captions: [] — el vídeo largo no lleva subtítulos quemados.
 //   - audio: siempre narration + music, y sfx si el vídeo tiene efectos de
 //     sonido propios (banda sonora ambiental / puntuales) — las tres son
@@ -71,6 +77,9 @@ export const artilugioLargoTemplate: ExplainerProps = {
   // Descartado para vídeos futuros — ver nota arriba. Deja [] o usa un tipo
   // ya cableado si el vídeo concreto necesita un overlay de texto.
   overlays: [],
+  // Negro real en vez del navy genérico de Remotion (#0F172A) para los
+  // fundidos de apertura/cierre — ver nota arriba.
+  themeConfig: { backgroundColor: "#000000" },
   captions: [],
   audio: {
     narration: { src: "video00X/audio/narration-final.mp3", volume: 1.0 },
