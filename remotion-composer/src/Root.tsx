@@ -1,11 +1,12 @@
 import { Composition, CalculateMetadataFunction } from "remotion";
 import { Explainer, ExplainerProps } from "./Explainer";
+import { video002Fixture } from "./fixtures/video002";
 import {
   CinematicRenderer,
   calculateCinematicMetadata,
 } from "./CinematicRenderer";
 import { signalFromTomorrowWithMusicFixture } from "./cinematic/fixtures";
-import { TalkingHead, TalkingHeadProps } from "./TalkingHead";
+import { TalkingHead, TalkingHeadProps, calculateTalkingHeadMetadata } from "./TalkingHead";
 import {
   TitledVideo,
   calculateTitledVideoMetadata,
@@ -48,6 +49,10 @@ export interface ThemeConfig {
   transitionDuration: number;
   captionHighlightColor: string;
   captionBackgroundColor: string;
+  /** Optional per-video override — undefined keeps Explainer's existing 42px
+   * default (16:9 long-form). Vertical shorts pass a larger size (e.g. 54,
+   * matching SocialClip's brand captions) via themeConfig. */
+  captionFontSize?: number;
 }
 
 export const THEMES: Record<string, ThemeConfig> = {
@@ -139,9 +144,15 @@ const calculateMetadata: CalculateMetadataFunction<ExplainerProps> = async ({
   if (cuts.length === 0) {
     return { durationInFrames: 30 * 60 };
   }
-  const lastEnd = Math.max(...cuts.map((c) => c.out_seconds || 0));
-  // Add 1 second padding for final fade
-  return { durationInFrames: Math.ceil((lastEnd + 1) * 30) };
+  const lastCut = cuts.reduce((a, b) =>
+    (b.out_seconds ?? 0) > (a.out_seconds ?? 0) ? b : a
+  );
+  const lastEnd = lastCut.out_seconds ?? 0;
+  // A cta_card is the composition's own terminal card — nothing fades
+  // after it, so no padding is needed. Any other ending (fade_black into
+  // nothing) keeps 1s of padding for that fade to actually land on screen.
+  const padding = lastCut.type === "cta_card" ? 0 : 1;
+  return { durationInFrames: Math.ceil((lastEnd + padding) * 30) };
 };
 
 export const Root: React.FC = () => {
@@ -160,6 +171,25 @@ export const Root: React.FC = () => {
           captions: [],
           audio: {},
         }}
+        calculateMetadata={calculateMetadata}
+      />
+      {/* Dedicated composition for video 002 — defaultProps are baked into the
+          bundle (src/fixtures/video002.ts) instead of relying on the
+          Studio-only `--props` CLI flag. Rendering "Explainer" with empty
+          defaultProps ({cuts: []}) is what produced the
+          "durationInFrames evaluated to be 1800" render error: the render
+          worker re-runs calculateMetadata against the composition's baked
+          defaultProps, not whatever was loaded into the Studio session at
+          preview time. Select "Video002" (not "Explainer") to render this
+          video from the Studio GUI. */}
+      <Composition
+        id="Video002"
+        component={Explainer}
+        durationInFrames={30 * 60}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={video002Fixture}
         calculateMetadata={calculateMetadata}
       />
       <Composition
@@ -201,7 +231,9 @@ export const Root: React.FC = () => {
           wordsPerPage: 4,
           fontSize: 52,
           highlightColor: "#22D3EE",
-        }}
+          durationSeconds: 30,
+        } as TalkingHeadProps}
+        calculateMetadata={calculateTalkingHeadMetadata}
       />
       <Composition
         id="TitledVideo"

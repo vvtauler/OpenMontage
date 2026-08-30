@@ -23,6 +23,12 @@ type CaptionOverlayProps = {
   highlightColor?: string;
   backgroundColor?: string;
   fontFamily?: string;
+  /** "bottom" (default) — safe-zone-aware bottom anchor, see below. "top" —
+   * anchors under a letterboxed video (TalkingHead's clip-factory shorts),
+   * clear of the lower_third overlay zone. */
+  position?: "top" | "bottom";
+  /** Extra manual vertical nudge in px, on top of the position anchor. */
+  verticalOffsetPx?: number;
 };
 
 interface CaptionPage {
@@ -45,6 +51,16 @@ function buildPages(words: WordCaption[], wordsPerPage: number): CaptionPage[] {
   return pages;
 }
 
+// Zona segura de plataforma en vertical (TikTok/Reels/Shorts cubren ~17% de
+// la altura con su propia UI nativa: caption/usuario/iconos de interacción)
+// — mismo criterio ya documentado en SocialClip.tsx (SAFE_MARGIN_BOTTOM,
+// 320px de 1920), pero nunca aplicado aquí: el paddingBottom fijo de 80px
+// dejaba los subtítulos dentro de esa zona prohibida en todo vídeo vertical.
+// Corrección repetida en los shorts del vídeo 001 — se fija aquí, en el
+// componente compartido, para que no haga falta repetirla en cada short.
+const VERTICAL_SAFE_BOTTOM_RATIO = 320 / 1920;
+const HORIZONTAL_BOTTOM_PADDING = 80;
+
 const PageRenderer: React.FC<{
   page: CaptionPage;
   fontSize: number;
@@ -52,9 +68,20 @@ const PageRenderer: React.FC<{
   highlightColor: string;
   backgroundColor: string;
   fontFamily: string;
-}> = ({ page, fontSize, color, highlightColor, backgroundColor, fontFamily }) => {
+  position: "top" | "bottom";
+  verticalOffsetPx: number;
+}> = ({
+  page,
+  fontSize,
+  color,
+  highlightColor,
+  backgroundColor,
+  fontFamily,
+  position,
+  verticalOffsetPx,
+}) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, height, width } = useVideoConfig();
 
   const currentMs = page.startMs + (frame / fps) * 1000;
 
@@ -65,12 +92,23 @@ const PageRenderer: React.FC<{
     config: { damping: 18, stiffness: 120 },
   });
 
+  const isVertical = height > width;
+  const containerStyle: React.CSSProperties =
+    position === "top"
+      ? { justifyContent: "flex-start", alignItems: "center", paddingTop: 460 }
+      : {
+          justifyContent: "flex-end",
+          alignItems: "center",
+          paddingBottom: isVertical
+            ? Math.round(height * VERTICAL_SAFE_BOTTOM_RATIO)
+            : HORIZONTAL_BOTTOM_PADDING,
+        };
+
   return (
     <AbsoluteFill
       style={{
-        justifyContent: "flex-end",
-        alignItems: "center",
-        paddingBottom: 80,
+        ...containerStyle,
+        transform: verticalOffsetPx ? `translateY(${verticalOffsetPx}px)` : undefined,
       }}
     >
       <div
@@ -125,6 +163,8 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
   highlightColor = "#22D3EE",
   backgroundColor = "rgba(15, 23, 42, 0.75)",
   fontFamily = "Space Grotesk, Inter, system-ui, sans-serif",
+  position = "bottom",
+  verticalOffsetPx = 0,
 }) => {
   const { fps } = useVideoConfig();
   const pages = buildPages(words, wordsPerPage);
@@ -148,6 +188,8 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
               highlightColor={highlightColor}
               backgroundColor={backgroundColor}
               fontFamily={fontFamily}
+              position={position}
+              verticalOffsetPx={verticalOffsetPx}
             />
           </Sequence>
         );

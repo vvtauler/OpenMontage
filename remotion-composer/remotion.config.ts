@@ -1,0 +1,1 @@
+/home/vvt/OpenMontage/remotion-composer/remotion.config.ts

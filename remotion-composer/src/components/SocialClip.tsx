@@ -9,21 +9,37 @@ import {
   useVideoConfig,
 } from "remotion";
 import { Video } from "@remotion/media";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { resolveAsset } from "../lib/resolveAsset";
 import { CaptionOverlay, WordCaption } from "./CaptionOverlay";
+import { Watermark } from "./Watermark";
+import { CtaCard, DEFAULT_CTA_TEXT, CTA_DURATION_SECONDS } from "./ArtilugioCta";
 import { scale } from "@remotion/effects/scale";
-import { loadFont as loadCinzel } from "@remotion/google-fonts/Cinzel";
-import { loadFont as loadMontserrat } from "@remotion/google-fonts/Montserrat";
-
-const { fontFamily: cinzelFontFamily } = loadCinzel("normal", {
-  weights: ["600"],
-});
-const { fontFamily: montserratFontFamily } = loadMontserrat("normal", {
-  weights: ["600"],
-});
 
 export type SocialClipCropMode = "center" | "fit-width-blur-bg";
+
+export type SocialClipBackgroundAnimation =
+  | "ken-burns"
+  | "zoom-in"
+  | "zoom-out"
+  | "pan-left"
+  | "pan-right"
+  | "drift-up";
+
+export interface SocialClipBackgroundCut {
+  /** Absolute filesystem path (or staticFile-relative path) to the image/video used as ambient VFX behind the foreground crop. */
+  source: string;
+  /**
+   * In/out point in seconds on the SAME timeline as `trimStartSeconds`/`trimEndSeconds`
+   * (the long video's timeline) — this is what keeps the background in sync with
+   * whatever is on screen in the long video during this exact audio range, instead
+   * of an unrelated brand backdrop.
+   */
+  inSeconds: number;
+  outSeconds: number;
+  /** Ken Burns direction; defaults to a gentle zoom + diagonal drift. */
+  animation?: SocialClipBackgroundAnimation;
+}
 
 export interface SocialClipProps {
   /** Absolute filesystem path (or staticFile-relative path) to the source master video. */
@@ -53,54 +69,13 @@ export interface SocialClipProps {
    * centrado varía de un plano a otro).
    */
   videoScale?: number;
-}
-
-// 4 líneas explícitas, la 3ª en blanco a propósito (espaciado entre
-// "YouTube" y la instrucción final).
-const DEFAULT_CTA_TEXT = "Vídeo completo en\nYouTube\n\nenlace en la bio";
-const CTA_DURATION_SECONDS = 2.5;
-
-/**
- * Mide el ancho real (en px) de un texto con una fuente/peso concretos a un
- * tamaño de referencia, usando canvas — evita adivinar métricas a ojo.
- */
-function measureTextWidth(
-  text: string,
-  fontWeight: number,
-  fontFamily: string,
-  referenceFontSize = 100
-): number {
-  if (typeof document === "undefined") return 0;
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return 0;
-  ctx.font = `${fontWeight} ${referenceFontSize}px ${fontFamily}`;
-  return ctx.measureText(text).width;
-}
-
-/**
- * Calcula el fontSize necesario para que `text` ocupe exactamente
- * `targetWidthPx`, midiendo con la fuente real ya cargada (en vez de
- * estirar el texto con textLength/letter-spacing, que deforma el tipo).
- * `letterSpacingEm` se suma como espacio extra entre caracteres si el
- * elemento también lleva letter-spacing en su CSS, para que el cálculo siga
- * siendo exacto.
- */
-function useFittedFontSize(
-  text: string,
-  fontFamily: string,
-  fontWeight: number,
-  targetWidthPx: number,
-  letterSpacingEm = 0
-): number {
-  return useMemo(() => {
-    const ref = 100;
-    const measured = measureTextWidth(text, fontWeight, fontFamily, ref);
-    const naturalRatio = measured > 0 ? measured / ref : text.length * 0.55; // fallback si no hay canvas
-    const gaps = Math.max(0, text.length - 1);
-    const denom = naturalRatio + gaps * letterSpacingEm;
-    return denom > 0 ? targetWidthPx / denom : ref;
-  }, [text, fontFamily, fontWeight, targetWidthPx, letterSpacingEm]);
+  /**
+   * VFX de fondo: recorte de imágenes/vídeo del vídeo largo que ocupan el
+   * mismo rango temporal que este short, mostrado en ken-burns detrás del
+   * vídeo recortado. Sustituye al fondo de marca estático mientras dura su
+   * rango — nunca puede quedar una imagen fija en pantalla.
+   */
+  backgroundCuts?: SocialClipBackgroundCut[];
 }
 
 const CANVAS_WIDTH = 1080;
@@ -115,9 +90,95 @@ const SAFE_MARGIN_TOP = 250; // ~13% de 1920 — evita la barra de estado/usuari
 const SAFE_MARGIN_BOTTOM = 320; // ~17% de 1920 — evita caption/usuario nativos de la plataforma
 const SAFE_MARGIN_SIDE = 64; // ~6% de 1080 a cada lado
 
-const WATERMARK_WIDTH = CANVAS_WIDTH * 0.11 * 1.23 * 2; // tamaño base x ajuste manual x2
-const WATERMARK_MARGIN = 283; // 40 (margen top) + 243 (bajado a mano en Studio, zona segura)
-const WATERMARK_OPACITY = 1;
+const BACKGROUND_VIDEO_EXTENSIONS = [".mp4", ".mov", ".webm", ".avi", ".mkv"];
+
+function isBackgroundVideoSource(source: string): boolean {
+  const lower = source.toLowerCase();
+  return BACKGROUND_VIDEO_EXTENSIONS.some((ext) => lower.endsWith(ext));
+}
+
+/**
+ * Deriva scale/translate por frame para que el fondo nunca quede como
+ * imagen fija — mismo vocabulario de animación que `Explainer.tsx` (Ken
+ * Burns, pan, zoom), pero con overscan propio (parte ya en 1.14x) porque
+ * aquí el fondo va desenfocado y objectFit="cover" en un lienzo 9:16 a
+ * partir de una fuente 16:9.
+ */
+function backgroundKenBurnsTransform(
+  progress: number,
+  animation: SocialClipBackgroundAnimation
+): { scale: number; xPercent: number; yPercent: number } {
+  const BASE_SCALE = 1.14;
+  switch (animation) {
+    case "zoom-in":
+      return { scale: BASE_SCALE + progress * 0.16, xPercent: 0, yPercent: 0 };
+    case "zoom-out":
+      return { scale: BASE_SCALE + 0.16 - progress * 0.16, xPercent: 0, yPercent: 0 };
+    case "pan-left":
+      return { scale: BASE_SCALE + 0.06, xPercent: interpolate(progress, [0, 1], [2.5, -2.5]), yPercent: 0 };
+    case "pan-right":
+      return { scale: BASE_SCALE + 0.06, xPercent: interpolate(progress, [0, 1], [-2.5, 2.5]), yPercent: 0 };
+    case "drift-up":
+      return {
+        scale: BASE_SCALE + progress * 0.08,
+        xPercent: 0,
+        yPercent: interpolate(progress, [0, 1], [2.5, -2.5]),
+      };
+    case "ken-burns":
+    default:
+      return {
+        scale: BASE_SCALE + progress * 0.12,
+        xPercent: interpolate(progress, [0, 1], [0, -2.5]),
+        yPercent: interpolate(progress, [0, 1], [0, -1.5]),
+      };
+  }
+}
+
+/**
+ * Capa de fondo desenfocada con Ken Burns continuo — nunca opacity 0 ni
+ * fundido a negro al entrar: arranca visible desde el frame 0 de su propio
+ * Sequence, con el desplazamiento ya en marcha. Sirve tanto para el fondo
+ * de marca persistente como para cada `backgroundCut` de VFX.
+ */
+const KenBurnsBackdrop: React.FC<{
+  src: string;
+  animation?: SocialClipBackgroundAnimation;
+  durationInFrames: number;
+  sourceInSeconds?: number;
+}> = ({ src, animation = "ken-burns", durationInFrames, sourceInSeconds = 0 }) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const progress = interpolate(frame, [0, Math.max(1, durationInFrames)], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const { scale: bgScale, xPercent, yPercent } = backgroundKenBurnsTransform(progress, animation);
+  const style: React.CSSProperties = {
+    position: "absolute",
+    inset: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    filter: "blur(46px) brightness(0.42) saturate(1.15)",
+    transform: `scale(${bgScale}) translate(${xPercent}%, ${yPercent}%)`,
+    zIndex: 0,
+  };
+
+  if (isBackgroundVideoSource(src)) {
+    return (
+      <Video
+        src={resolveAsset(src)}
+        trimBefore={Math.round(sourceInSeconds * fps)}
+        durationInFrames={durationInFrames}
+        muted
+        objectFit="cover"
+        style={style}
+      />
+    );
+  }
+
+  return <CanvasImage src={resolveAsset(src)} style={style} />;
+};
 
 function useWordCaptions(captionsFile: string): WordCaption[] | null {
   const [words, setWords] = useState<WordCaption[] | null>(null);
@@ -143,123 +204,6 @@ function useWordCaptions(captionsFile: string): WordCaption[] | null {
   return words;
 }
 
-const Watermark: React.FC<{ src: string }> = ({ src }) => (
-  <CanvasImage
-    src={resolveAsset(src)}
-    style={{
-      position: "absolute",
-      top: WATERMARK_MARGIN,
-      left: "50%",
-      transform: "translateX(-50%)",
-      width: WATERMARK_WIDTH,
-      height: "auto",
-      opacity: WATERMARK_OPACITY,
-      zIndex: 3,
-      translate: "0px -146px"
-    }}
-    from={-22} />
-);
-
-const ARTILUGIO_MARK = "ARTILUGIO";
-const ARTILUGIO_LETTER_SPACING_EM = 0.22;
-const ARTILUGIO_TARGET_WIDTH = CANVAS_WIDTH * 0.8; // 80% del ancho de pantalla
-
-const CTA_TARGET_WIDTH = CANVAS_WIDTH * 0.75; // 75% del ancho, medido por la línea más larga
-
-/** Wordmark "ARTILUGIO", elemento independiente, justo debajo del isotipo. */
-const ArtilugioMark: React.FC = () => {
-  const fontSize = useFittedFontSize(
-    ARTILUGIO_MARK,
-    cinzelFontFamily,
-    600,
-    ARTILUGIO_TARGET_WIDTH,
-    ARTILUGIO_LETTER_SPACING_EM
-  );
-
-  return (
-    <div
-      style={{
-        fontFamily: cinzelFontFamily,
-        fontWeight: 600,
-        fontSize,
-        letterSpacing: `${ARTILUGIO_LETTER_SPACING_EM}em`,
-        color: "#E2E8F0", // Blanco Acero
-        textShadow: "0 2px 16px rgba(0,0,0,0.7)",
-        whiteSpace: "nowrap",
-      }}
-    >
-      {ARTILUGIO_MARK}
-    </div>
-  );
-};
-
-/** CTA, elemento independiente: N líneas explícitas (separadas por \n en el
- * texto), todas al mismo fontSize — el que hace que la línea más larga
- * ocupe exactamente CTA_TARGET_WIDTH. Una línea vacía solo aporta el hueco
- * vertical de una línea, sin texto. */
-const CtaText: React.FC<{ text: string }> = ({ text }) => {
-  const lines = text.split("\n");
-  const longestLine = lines.reduce((a, b) => (b.length > a.length ? b : a), "");
-  const fontSize = useFittedFontSize(
-    longestLine,
-    montserratFontFamily,
-    600,
-    CTA_TARGET_WIDTH
-  );
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      {lines.map((line, i) => (
-        <div
-          key={i}
-          style={{
-            fontFamily: montserratFontFamily,
-            fontWeight: 600,
-            fontSize,
-            lineHeight: 1.35,
-            color: "#C87A38", // Bronce Forjado
-            textAlign: "center",
-            whiteSpace: "nowrap",
-            textShadow: line ? "0 2px 10px rgba(0,0,0,0.7)" : undefined,
-          }}
-        >
-          {line || " " /* línea en blanco: solo el hueco vertical */}
-        </div>
-      ))}
-    </div>
-  );
-};
-
-const CtaCard: React.FC<{ text: string }> = ({ text }) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const opacity = interpolate(frame, [0, Math.round(0.4 * fps)], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-
-  return (
-    <AbsoluteFill style={{ zIndex: 4 }}>
-      {/* ARTILUGIO — justo debajo del isotipo, posición fija */}
-      <div
-        style={{
-          opacity,
-          position: "absolute",
-          top: 460, // justo debajo del isotipo (misma zona segura que los subtítulos)
-          left: "50%",
-          transform: "translateX(-50%)",
-        }}
-      >
-        <ArtilugioMark />
-      </div>
-      {/* CTA — elemento independiente, centrado en toda la pantalla */}
-      <AbsoluteFill style={{ opacity, justifyContent: "center", alignItems: "center" }}>
-        <CtaText text={text} />
-      </AbsoluteFill>
-    </AbsoluteFill>
-  );
-};
-
 export const SocialClip: React.FC<SocialClipProps> = ({
   videoSrc,
   trimStartSeconds,
@@ -269,8 +213,9 @@ export const SocialClip: React.FC<SocialClipProps> = ({
   cropMode,
   ctaText = DEFAULT_CTA_TEXT,
   videoScale = 0.7,
+  backgroundCuts = [],
 }) => {
-  const { fps } = useVideoConfig();
+  const { fps, durationInFrames: compositionDurationInFrames } = useVideoConfig();
   const words = useWordCaptions(captionsFile);
   const trimBeforeFrames = Math.round(trimStartSeconds * fps);
   const durationInFrames = Math.round((trimEndSeconds - trimStartSeconds) * fps);
@@ -288,26 +233,44 @@ export const SocialClip: React.FC<SocialClipProps> = ({
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#0E0E11" }}>
-      {/* Fondo de marca y logo — persistentes durante todo el clip (vídeo +
-          cierre), no solo durante el metraje. Debajo del vídeo se tapan;
-          en la tarjeta de cierre quedan visibles como base de esa pantalla,
-          así el cierre no rompe con lo que se ha visto hasta ese momento. */}
-      <CanvasImage
-        src={resolveAsset("social-clips/source/fondo-limpio.jpg")}
-        style={{
-          position: "absolute",
-          top: 0,
-          left: "50%",
-          transform: "translateX(-50%)",
-          height: "100%",
-          width: "auto",
-
-          // explícito: por si algún efecto de vídeo crea su propio stacking context
-          zIndex: 0,
-
-          translate: "1px 0px"
-        }}
-        from={-11} />
+      {/* Fondo de marca — persistente durante todo el clip (vídeo + cierre),
+          con Ken Burns continuo propio: nunca puede quedar como una imagen
+          fija en pantalla, ni siquiera bajo la tarjeta de cierre. Los
+          `backgroundCuts` (más abajo) lo tapan mientras dura el metraje. */}
+      <KenBurnsBackdrop
+        src="social-clips/source/fondo-limpio.jpg"
+        animation="ken-burns"
+        durationInFrames={compositionDurationInFrames}
+      />
+      {/* VFX de fondo — mismo tramo de imágenes/vídeo que aparece en el vídeo
+          largo durante este mismo rango de audio, en ken-burns, para que el
+          margen alrededor del recorte central nunca sea un fondo de marca
+          inerte y desconectado de lo que se está narrando. Arranca visible
+          desde su propio frame 0 (sin fundido a negro). */}
+      {backgroundCuts.map((cut, index) => {
+        const cutStartFrame = Math.round((cut.inSeconds - trimStartSeconds) * fps);
+        const cutEndFrame = Math.min(
+          durationInFrames,
+          Math.round((cut.outSeconds - trimStartSeconds) * fps)
+        );
+        const cutDurationFrames = cutEndFrame - Math.max(0, cutStartFrame);
+        if (cutDurationFrames <= 0 || cutStartFrame >= durationInFrames) return null;
+        return (
+          <Sequence
+            key={`${cut.source}-${index}`}
+            from={Math.max(0, cutStartFrame)}
+            durationInFrames={cutDurationFrames}
+            layout="none"
+          >
+            <KenBurnsBackdrop
+              src={cut.source}
+              animation={cut.animation}
+              durationInFrames={cutDurationFrames}
+              sourceInSeconds={Math.max(0, trimStartSeconds - cut.inSeconds)}
+            />
+          </Sequence>
+        );
+      })}
       <Watermark src={watermarkSrc} />
       <Sequence durationInFrames={durationInFrames} layout="none" from={-2}>
       {cropMode === "center" ? (

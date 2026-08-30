@@ -3,6 +3,7 @@ import {
   OffthreadVideo,
   Sequence,
   interpolate,
+  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
@@ -31,6 +32,7 @@ export interface TalkingHeadOverlay {
   position?:
     | "lower_third"
     | "upper_third"
+    | "title_band"
     | "left_panel"
     | "right_panel"
     | "full_overlay";
@@ -82,6 +84,16 @@ const POSITION_STYLES: Record<string, React.CSSProperties> = {
     right: 40,
     height: 480,
   },
+  // Band directly under a letterboxed video (video occupies roughly y:80-688
+  // at the standard 1080-wide/16:9-source letterbox used by clip-factory
+  // exports) — for the fixed hook-title treatment approved for this batch.
+  title_band: {
+    position: "absolute",
+    top: 700,
+    left: 60,
+    right: 60,
+    height: 280,
+  },
   left_panel: {
     position: "absolute",
     top: 200,
@@ -106,6 +118,45 @@ const POSITION_STYLES: Record<string, React.CSSProperties> = {
 };
 
 // ---------------------------------------------------------------------------
+// Title pill — compact rounded title chip over full-bleed video, matching
+// the channel's existing Shorts (dark translucent pill, thin border, bold
+// centered caps text) instead of a full-width/full-height solid card.
+// ---------------------------------------------------------------------------
+
+const TitlePill: React.FC<{ text: string; accentColor?: string; fontSize?: number }> = ({
+  text,
+  accentColor = "#4ADC82",
+  fontSize = 30,
+}) => (
+  <AbsoluteFill style={{ justifyContent: "flex-start", alignItems: "center" }}>
+    <div
+      style={{
+        marginTop: 8,
+        padding: "16px 26px",
+        borderRadius: 10,
+        backgroundColor: "rgba(20, 24, 28, 0.82)",
+        border: `1.5px solid ${accentColor}99`,
+        maxWidth: "94%",
+      }}
+    >
+      <div
+        style={{
+          fontFamily: "Inter, system-ui, sans-serif",
+          fontWeight: 800,
+          fontSize,
+          color: "#FFFFFF",
+          textAlign: "center",
+          textTransform: "uppercase",
+          lineHeight: 1.25,
+        }}
+      >
+        {text}
+      </div>
+    </div>
+  </AbsoluteFill>
+);
+
+// ---------------------------------------------------------------------------
 // Overlay component dispatcher — maps overlay type to Remotion component
 // ---------------------------------------------------------------------------
 
@@ -114,6 +165,37 @@ const OverlayContent: React.FC<{ overlay: TalkingHeadOverlay }> = ({
 }) => {
   const bgColor = overlay.backgroundColor || "#0F172A";
 
+  if (overlay.type === "title_pill" && overlay.text) {
+    return (
+      <TitlePill
+        text={overlay.text}
+        accentColor={overlay.accentColor}
+        fontSize={overlay.fontSize}
+      />
+    );
+  }
+  if (overlay.type === "glow_text" && overlay.text) {
+    return (
+      <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
+        <div
+          style={{
+            fontFamily: "Inter, system-ui, sans-serif",
+            fontWeight: 800,
+            fontSize: overlay.fontSize || 60,
+            color: overlay.color || overlay.accentColor || "#4ADC82",
+            textAlign: "center",
+            textTransform: "uppercase",
+            lineHeight: 1.2,
+            whiteSpace: "pre-line",
+            textShadow: `0 0 24px ${(overlay.color || overlay.accentColor || "#4ADC82")}99, 0 2px 10px rgba(0,0,0,0.8)`,
+            maxWidth: "88%",
+          }}
+        >
+          {overlay.text}
+        </div>
+      </AbsoluteFill>
+    );
+  }
   if (overlay.type === "text_card" && overlay.text) {
     return (
       <TextCard
@@ -269,15 +351,20 @@ const PositionedOverlay: React.FC<{ overlay: TalkingHeadOverlay }> = ({
   const position = overlay.position || "lower_third";
   const posStyle = POSITION_STYLES[position] || POSITION_STYLES.lower_third;
   const isFullOverlay = position === "full_overlay";
+  // title_pill and glow_text are self-contained (their own pill/no chrome at
+  // all) — they must NOT get the generic card shadow/rounded-corner/overflow
+  // clip, which otherwise paints a visible ghost rectangle the size of the
+  // whole position zone behind a small pill or borderless glow text.
+  const isChromeless = overlay.type === "title_pill" || overlay.type === "glow_text";
 
   return (
     <div
       style={{
         ...posStyle,
         opacity,
-        overflow: "hidden",
-        borderRadius: isFullOverlay ? 0 : 16,
-        boxShadow: isFullOverlay
+        overflow: isChromeless ? "visible" : "hidden",
+        borderRadius: isFullOverlay || isChromeless ? 0 : 16,
+        boxShadow: isFullOverlay || isChromeless
           ? "none"
           : "0 8px 32px rgba(0, 0, 0, 0.4)",
       }}
@@ -302,6 +389,37 @@ export interface TalkingHeadProps {
   wordsPerPage?: number;
   fontSize?: number;
   highlightColor?: string;
+  /** Clip duration in seconds — required for calculateTalkingHeadMetadata to size the composition to the actual clip instead of a fixed placeholder. */
+  durationSeconds?: number;
+  /** Caption anchor. Defaults to "bottom" (legacy). Use "top" to pin captions directly under a letterboxed video, keeping the lower_third overlay zone clear (avoids the two overlapping). */
+  captionPosition?: "top" | "bottom";
+  /** Extra vertical nudge for captions, passed straight to CaptionOverlay. */
+  captionVerticalOffsetPx?: number;
+}
+
+/**
+ * Sizes the composition to the clip's real duration. TalkingHead is used
+ * for independently-trimmed social clips (clip-factory pipeline) whose
+ * length varies per clip — without this, every render would use the
+ * Root.tsx placeholder duration (300s) regardless of actual content length.
+ */
+export function calculateTalkingHeadMetadata({
+  props,
+}: {
+  props: TalkingHeadProps;
+}) {
+  const fps = 30;
+  const fallbackSeconds = 30;
+  const seconds =
+    typeof props.durationSeconds === "number" && props.durationSeconds > 0
+      ? props.durationSeconds
+      : fallbackSeconds;
+  return {
+    durationInFrames: Math.max(1, Math.round(seconds * fps)),
+    fps,
+    width: 1080,
+    height: 1920,
+  };
 }
 
 export const TalkingHead: React.FC<TalkingHeadProps> = ({
@@ -311,14 +429,24 @@ export const TalkingHead: React.FC<TalkingHeadProps> = ({
   wordsPerPage = 4,
   fontSize = 52,
   highlightColor = "#22D3EE",
+  captionPosition = "bottom",
+  captionVerticalOffsetPx,
 }) => {
   const { fps } = useVideoConfig();
+
+  // Local public-relative paths (e.g. "bmbtv-clinic-ataque-51/clip-03.mp4")
+  // must go through staticFile() to resolve under the served public dir.
+  // Remote URLs pass through unchanged. OffthreadVideo rejects file:// URIs,
+  // so plain absolute paths are intentionally NOT supported here.
+  const resolvedVideoSrc = /^(https?:|data:)/.test(videoSrc)
+    ? videoSrc
+    : staticFile(videoSrc);
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#000" }}>
       {/* Layer 1: Video background */}
       <OffthreadVideo
-        src={videoSrc}
+        src={resolvedVideoSrc}
         style={{ width: "100%", height: "100%", objectFit: "cover" }}
       />
 
@@ -347,6 +475,8 @@ export const TalkingHead: React.FC<TalkingHeadProps> = ({
         highlightColor={highlightColor}
         backgroundColor="rgba(0, 0, 0, 0.65)"
         color="#FFFFFF"
+        position={captionPosition}
+        verticalOffsetPx={captionVerticalOffsetPx}
       />
     </AbsoluteFill>
   );

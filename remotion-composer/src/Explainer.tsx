@@ -31,6 +31,8 @@ import { ListReveal } from "./components/ListReveal";
 import type { ListRevealItem } from "./components/ListReveal";
 import { PhotoInsert } from "./components/PhotoInsert";
 import { MonumentalTitle } from "./components/MonumentalTitle";
+import { Watermark } from "./components/Watermark";
+import { CtaScene, CtaBackground } from "./components/ArtilugioCta";
 import { TerminalScene } from "./components/TerminalScene";
 import type { TerminalStep } from "./components/TerminalScene";
 import { ScreenshotScene } from "./components/ScreenshotScene";
@@ -240,9 +242,38 @@ interface Cut {
   transition_duration?: number;
   transform?: {
     animation?: string;
+    // Peak scale reached by the cut's zoom. Images: overrides the default
+    // 1.28 peak of animation "zoom-in"/"zoom-out" (other animations keep
+    // their own fixed amplitude). Videos: a static punch-in held for the
+    // whole cut, no animated growth (1 = no zoom, the default everywhere
+    // video is used).
     scale?: number;
     position?: string | { x: number; y: number };
+    // Ancla del zoom de la animación de la propia imagen (ken-burns,
+    // zoom-in, ...) — CSS transform-origin, p. ej. "50% 100%" para que el
+    // borde inferior de la imagen quede fijo con el borde inferior del
+    // vídeo mientras hace zoom, en vez de crecer desde el centro (por
+    // defecto "50% 50%").
+    zoomOrigin?: string;
   };
+  // Per-cut audio (e.g. a CTA voiceover) — plays exactly during this cut's
+  // own on-screen window, independent of the composition-wide
+  // audio.narration/audio.music tracks.
+  audioSrc?: string;
+  audioVolume?: number;
+  /** Delay (seconds, relative to this cut's own start) before audioSrc
+   * starts playing — e.g. a beat of silence before a CTA voiceover kicks
+   * in, instead of it starting exactly on the cut's first frame. */
+  audioStartSeconds?: number;
+  // Video cuts — "contain" instead of the default "cover" for motion
+  // graphics whose on-screen text/diagrams reach their own edges (a crop
+  // would cut information off).
+  videoFit?: "cover" | "contain";
+  // Retimes the source without changing (out_seconds - in_seconds) —
+  // e.g. slotting an existing clip into a new on-screen duration so its
+  // content still finishes exactly at the cut's own end instead of
+  // freezing early or getting cut off. 1 = native speed.
+  playbackRate?: number;
   // Anime scene props (type: "anime_scene")
   images?: string[];
   particles?: ParticleType;
@@ -285,15 +316,27 @@ interface Overlay {
   caption?: string;
   attribution?: string;
   width?: number;
+  // monumental_title — fracción del ancho de pantalla que debe ocupar el
+  // título (0-1; por defecto 0.9) y si lleva el halo de fondo suave detrás
+  // (por defecto true — desactivarlo tiene sentido sobre imágenes ya
+  // oscuras, donde el texto blanco ya tiene contraste de sobra).
+  widthRatio?: number;
+  background?: boolean;
 }
 
 interface AudioLayer {
   src: string;
   volume?: number;
+  /** Stop playback at this point (seconds into the composition timeline,
+   * since narration/music start at frame 0) — trims the tail instead of
+   * letting it run to the end of the source file. */
+  endAt?: number;
 }
 
 interface AudioConfig {
   narration?: AudioLayer;
+  /** Sound-effects track — independent of narration/music, mixed in parallel. */
+  sfx?: AudioLayer;
   music?: AudioLayer & {
     fadeInSeconds?: number;
     fadeOutSeconds?: number;
@@ -311,6 +354,19 @@ export interface ExplainerProps {
   overlays?: Overlay[];
   captions?: WordCaption[];
   audio?: AudioConfig;
+  /** Isotipo del canal, persistente durante toda la composición — mismo
+   * tratamiento que en los shorts de vídeo 1 (vía SocialClip). Opt-in: sin
+   * este prop no se renderiza nada, así que el vídeo largo (16:9) no se ve
+   * afectado. */
+  watermarkSrc?: string;
+  /** Fondo de marca (fondo-limpio.jpg, el mismo que usa la tarjeta CTA) de
+   * toda la composición, montado una sola vez detrás de todo — igual que
+   * watermarkSrc. Pensado para cortes de vídeo en videoFit:"contain": al
+   * ir por-corte (montar/desmontar junto al propio <OffthreadVideo> en
+   * cada Sequence) el vídeo dejaba de pintarse pasados unos ~140 frames;
+   * como capa única y persistente no le pasa — mismo patrón ya probado
+   * con el isotipo, que convive con los cortes de vídeo sin problema. */
+  brandBackground?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -373,27 +429,60 @@ const ImageScene: React.FC<{
   /** Anchor point for objectFit:"cover" cropping and the camera motion
    * transform above it — e.g. { x: 65, y: 40 } or "top". Default: centered. */
   focalPoint?: string | { x: number; y: number };
+  /** "cut"/"none" skips the spring fade-in (resp. the fade-out tail) entirely —
+   * e.g. a social short's opening cut, which needs to hook instantly instead
+   * of rising from black. Anything else (including unset) keeps the existing
+   * spring/crossfade look every other cut already relies on. */
+  transitionIn?: string;
+  transitionOut?: string;
+  /** CSS transform-origin for the zoom/pan animation above — e.g. "50% 100%"
+   * pins the image's bottom edge in place while it zooms in, instead of the
+   * default "50% 50%" (grows from center, both edges recede evenly). */
+  zoomOrigin?: string;
+  /** Backing behind the image — matters when transitionOut fades toward
+   * 0.3 opacity (not 0): whatever this is set to is what gets revealed
+   * during that fade. Default "#0F172A" everywhere except where a cut
+   * explicitly overrides it (e.g. "transparent" right before a CTA card,
+   * so its own background shows through the fade instead of this flat
+   * navy placeholder). */
+  backgroundColor?: string;
+  /** Overrides the peak scale reached by "zoom-in"/"zoom-out" (default
+   * 1.28 either way) — e.g. 1.14 to halve the default zoom-in amount.
+   * Other animations (pan-*, ken-burns, ...) keep their own fixed
+   * amplitude regardless of this prop. */
+  zoomScale?: number;
 }> = ({
   src,
   animation,
   focalPoint,
+  transitionIn,
+  transitionOut,
+  zoomOrigin,
+  backgroundColor = "#0F172A",
+  zoomScale,
 }) => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
 
-  // Smooth spring fade-in
-  const fadeIn = spring({ frame, fps, config: { damping: 18, stiffness: 80 } });
+  const hardIn = ["cut", "none"].includes((transitionIn || "").toLowerCase());
+  const hardOut = ["cut", "none"].includes((transitionOut || "").toLowerCase());
 
-  // Fade-out for crossfade effect
+  // Smooth spring fade-in — skipped on a hard cut-in.
+  const fadeIn = hardIn ? 1 : spring({ frame, fps, config: { damping: 18, stiffness: 80 } });
+
+  // Fade-out for crossfade effect — skipped on a hard cut-out.
   const fadeOutStart = durationInFrames - 8;
-  const fadeOut = interpolate(frame, [fadeOutStart, durationInFrames], [1, 0.3], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const fadeOut = hardOut
+    ? 1
+    : interpolate(frame, [fadeOutStart, durationInFrames], [1, 0.3], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+      });
 
   let scale = 1;
   let translateX = 0;
   let translateY = 0;
+  let objectPositionXOverride: number | undefined;
   const anim = animation || "zoom-in";
 
   // Progress with easing — smoother than linear
@@ -405,10 +494,11 @@ const ImageScene: React.FC<{
   // Amplitudes raised ~55-70% over the original values (29 ago 2026) — see
   // matching note in components/AnimeScene.tsx useCameraMotion. Scale grows
   // alongside translate so the wider pan/drift never reveals the image edge.
+  const zoomAmplitude = zoomScale !== undefined ? zoomScale - 1 : 0.28;
   if (anim === "zoom-in") {
-    scale = 1 + progress * 0.28;
+    scale = 1 + progress * zoomAmplitude;
   } else if (anim === "zoom-out") {
-    scale = 1.28 - progress * 0.28;
+    scale = 1 + zoomAmplitude - progress * zoomAmplitude;
   } else if (anim === "pan-left") {
     translateX = interpolate(progress, [0, 1], [65, -65]);
     scale = 1.2;
@@ -424,20 +514,37 @@ const ImageScene: React.FC<{
     // Subtle parallax — foreground moves faster
     translateY = interpolate(progress, [0, 1], [28, -28]);
     scale = 1.16;
+  } else if (anim === "drift-up") {
+    // Gentle continuous upward drift — was silently falling through to no
+    // motion at all (unrecognized keyword), leaving the cut static.
+    translateY = interpolate(progress, [0, 1], [26, -26]);
+    scale = 1.08 + progress * 0.08;
+  } else if (anim === "pan-edge-left-to-right") {
+    // Full edge-to-edge sweep of the "cover" crop window itself — starts
+    // showing the image's left margin (object-position 0%), ends showing
+    // its right margin (100%). No scale/translate involved: unlike
+    // "pan-left"/"pan-right" above (a small ±65px drift at a fixed 1.2x
+    // zoom), this animates the crop position directly so the full source
+    // width is revealed over the cut's duration.
+    objectPositionXOverride = interpolate(progress, [0, 1], [0, 100]);
   }
   // "static" or "none" → just display
 
   return (
-    <AbsoluteFill style={{ overflow: "hidden", background: "#0F172A" }}>
+    <AbsoluteFill style={{ overflow: "hidden", background: backgroundColor }}>
       <Img
         src={resolveAsset(src)}
         style={{
           width: "100%",
           height: "100%",
           objectFit: "cover",
-          objectPosition: resolveObjectPosition(focalPoint),
+          objectPosition:
+            objectPositionXOverride !== undefined
+              ? `${objectPositionXOverride}% 50%`
+              : resolveObjectPosition(focalPoint),
           opacity: fadeIn * fadeOut,
           transform: `scale(${scale}) translate(${translateX}px, ${translateY}px)`,
+          transformOrigin: zoomOrigin || "50% 50%",
           willChange: "transform, opacity",
         }}
       />
@@ -458,6 +565,22 @@ const VideoScene: React.FC<{
   transitionDuration?: number;
   sceneDurationSeconds: number;
   backgroundColor?: string;
+  /** "contain" scales the clip to fit fully inside the frame instead of
+   * cropping it — for motion graphics with on-screen text/diagram content
+   * that reaches the clip's own edges, where a "cover" crop would cut
+   * information off. Default "cover" (existing behavior everywhere else). */
+  fit?: "cover" | "contain";
+  /** Speeds up (>1) or slows down (<1) the source without touching the
+   * cut's own on-screen duration — e.g. retiming a clip to a new slot in a
+   * reordered sequence so its content still finishes right as the cut
+   * ends, instead of freezing on its last frame early or getting cut off
+   * mid-playback. Default 1 (native speed). */
+  playbackRate?: number;
+  /** Fixed scale applied for the cut's whole duration — a static punch-in,
+   * not an animated zoom (no movement, no progress-based growth). e.g.
+   * 1.25 holds the clip at 125% throughout. Default 1 (no zoom, existing
+   * behavior everywhere else). */
+  zoomScale?: number;
 }> = ({
   src,
   startFrom = 0,
@@ -466,10 +589,14 @@ const VideoScene: React.FC<{
   transitionDuration,
   sceneDurationSeconds,
   backgroundColor = "#0F172A",
+  fit = "cover",
+  playbackRate = 1,
+  zoomScale = 1,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const durationInFrames = Math.max(1, Math.round(sceneDurationSeconds * fps));
+  const scale = zoomScale;
 
   const hardIn = ["cut", "none"].includes((transitionIn || "").toLowerCase());
   const hardOut = ["cut", "none"].includes((transitionOut || "").toLowerCase());
@@ -492,15 +619,17 @@ const VideoScene: React.FC<{
       });
 
   return (
-    <AbsoluteFill style={{ background: backgroundColor }}>
+    <AbsoluteFill style={{ background: backgroundColor, overflow: "hidden" }}>
       <OffthreadVideo
         src={resolveAsset(src)}
         startFrom={Math.round(startFrom * fps)}
+        playbackRate={playbackRate}
         style={{
           width: "100%",
           height: "100%",
-          objectFit: "cover",
+          objectFit: fit,
           opacity: fadeIn * fadeOut,
+          transform: `scale(${scale})`,
         }}
         muted
       />
@@ -589,6 +718,13 @@ const BackgroundVideoLayer: React.FC<{
 };
 
 const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme }) => {
+  // Closing CTA card (type: "cta_card") — same brand card the video 001
+  // shorts close on. Self-contained (own background), not wrapped with
+  // maybeWrapWithBg below since it isn't image/video content.
+  if (cut.type === "cta_card") {
+    return <CtaScene text={cut.text} />;
+  }
+
   // Wrap component with background video or image if specified
   const maybeWrapWithBg = (element: React.ReactElement) => {
     if (cut.backgroundVideo) {
@@ -785,7 +921,16 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
 
   if (cut.source && isImage(cut.source)) {
     return maybeWrapWithBg(
-      <ImageScene src={cut.source} animation={animation} focalPoint={cut.transform?.position} />,
+      <ImageScene
+        src={cut.source}
+        animation={animation}
+        focalPoint={cut.transform?.position}
+        transitionIn={cut.transition_in}
+        transitionOut={cut.transition_out}
+        zoomOrigin={cut.transform?.zoomOrigin}
+        backgroundColor={cut.backgroundColor}
+        zoomScale={cut.transform?.scale}
+      />,
     );
   }
 
@@ -799,6 +944,9 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
         transitionDuration={cut.transition_duration}
         sceneDurationSeconds={cut.out_seconds - cut.in_seconds}
         backgroundColor={cut.backgroundColor}
+        fit={cut.videoFit}
+        playbackRate={cut.playbackRate}
+        zoomScale={cut.transform?.scale}
       />,
     );
   }
@@ -806,7 +954,16 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
   // Final fallback — try as image if source exists, otherwise show text_card
   if (cut.source) {
     return maybeWrapWithBg(
-      <ImageScene src={cut.source} animation={animation} focalPoint={cut.transform?.position} />,
+      <ImageScene
+        src={cut.source}
+        animation={animation}
+        focalPoint={cut.transform?.position}
+        transitionIn={cut.transition_in}
+        transitionOut={cut.transition_out}
+        zoomOrigin={cut.transform?.zoomOrigin}
+        backgroundColor={cut.backgroundColor}
+        zoomScale={cut.transform?.scale}
+      />,
     );
   }
 
@@ -880,6 +1037,8 @@ const OverlayRenderer: React.FC<{ overlay: Overlay }> = ({ overlay }) => {
         title={overlay.text ?? ""}
         subtitle={overlay.subtitle}
         position={(overlay.position as "center" | "bottom-center") || "bottom-center"}
+        widthRatio={overlay.widthRatio}
+        background={overlay.background}
       />
     );
   }
@@ -890,8 +1049,10 @@ const OverlayRenderer: React.FC<{ overlay: Overlay }> = ({ overlay }) => {
 // Main composition
 // ---------------------------------------------------------------------------
 
+const CTA_BACKGROUND_LEAD_SECONDS = 1;
+
 export const Explainer: React.FC<ExplainerProps> = (props) => {
-  const { cuts, overlays, captions, audio } = props;
+  const { cuts, overlays, captions, audio, watermarkSrc, brandBackground } = props;
   const { fps, durationInFrames } = useVideoConfig();
 
   // Resolve theme from props — playbook name, theme name, or custom themeConfig
@@ -902,14 +1063,60 @@ export const Explainer: React.FC<ExplainerProps> = (props) => {
       {/* Layer 0: Animated gradient background — driven by theme */}
       <AnimatedBackground theme={theme} />
 
+      {/* Layer 0.4: persistent brand background (fondo-limpio.jpg) for the
+          whole composition — see ExplainerProps.brandBackground doc. Only
+          actually visible wherever cuts don't fully cover it (e.g. a
+          videoFit:"contain" cut's letterbox bars). */}
+      {brandBackground && <CtaBackground />}
+
+      {/* Layer 0.5: cta_card background(s), visible a beat before the cut
+          officially starts — sits behind the Layer 1 loop below (painted
+          first), so it only actually shows once the preceding cut's own
+          fade reveals it. Cut "19b" pairs with this by setting its own
+          backgroundColor to "transparent" for its last frames; without
+          that override an image cut's opaque backing (#0F172A) would keep
+          blocking this regardless. */}
+      {cuts
+        .filter((c) => c.type === "cta_card")
+        .map((c) => {
+          const leadFrom = Math.round((c.in_seconds - CTA_BACKGROUND_LEAD_SECONDS) * fps);
+          return (
+            <Sequence
+              key={`cta-bg-${c.id}`}
+              from={Math.max(0, leadFrom)}
+              durationInFrames={Math.round(CTA_BACKGROUND_LEAD_SECONDS * fps)}
+            >
+              <CtaBackground />
+            </Sequence>
+          );
+        })}
+
       {/* Layer 1: Visual scenes */}
       {cuts.map((cut) => {
         const from = Math.round(cut.in_seconds * fps);
         const duration = Math.round((cut.out_seconds - cut.in_seconds) * fps);
+        // cta_card gets a head start via Remotion's built-in premounting —
+        // its <CanvasImage> background gets to finish decoding before the
+        // cut needs to actually be visible, instead of flashing blank on
+        // its first real frame while the image loads for the first time.
+        const premountFor =
+          cut.type === "cta_card"
+            ? Math.round(CTA_BACKGROUND_LEAD_SECONDS * fps)
+            : undefined;
 
         return (
-          <Sequence key={cut.id} from={from} durationInFrames={duration}>
+          <Sequence
+            key={cut.id}
+            from={from}
+            durationInFrames={duration}
+            premountFor={premountFor}
+          >
             <SceneRenderer cut={cut} theme={theme} />
+            {cut.audioSrc && (
+              <Sequence from={Math.round((cut.audioStartSeconds ?? 0) * fps)} layout="none">
+                <Audio src={resolveAsset(cut.audioSrc)} volume={cut.audioVolume ?? 1} />
+              </Sequence>
+            )}
           </Sequence>
         );
       })}
@@ -933,15 +1140,39 @@ export const Explainer: React.FC<ExplainerProps> = (props) => {
         <CaptionOverlay
           words={captions}
           wordsPerPage={6}
-          fontSize={42}
+          fontSize={theme.captionFontSize ?? 42}
           highlightColor={theme.captionHighlightColor}
           backgroundColor={theme.captionBackgroundColor}
         />
       )}
 
+      {/* Layer 3b: Isotipo del canal — persistente, opt-in vía watermarkSrc */}
+      {watermarkSrc && <Watermark src={watermarkSrc} />}
+
       {/* Layer 4: Audio — narration */}
       {audio?.narration?.src && (
-        <Audio src={resolveAsset(audio.narration.src)} volume={audio.narration.volume ?? 1} />
+        <Audio
+          src={resolveAsset(audio.narration.src)}
+          volume={audio.narration.volume ?? 1}
+          trimAfter={
+            audio.narration.endAt !== undefined
+              ? Math.round(audio.narration.endAt * fps)
+              : undefined
+          }
+        />
+      )}
+
+      {/* Layer 4: Audio — sfx */}
+      {audio?.sfx?.src && (
+        <Audio
+          src={resolveAsset(audio.sfx.src)}
+          volume={audio.sfx.volume ?? 1}
+          trimAfter={
+            audio.sfx.endAt !== undefined
+              ? Math.round(audio.sfx.endAt * fps)
+              : undefined
+          }
+        />
       )}
 
       {/* Layer 4: Audio — music with offset, fade in/out, and optional loop */}
