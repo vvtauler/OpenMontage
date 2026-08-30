@@ -1,6 +1,5 @@
 import { Composition, CalculateMetadataFunction } from "remotion";
 import { Explainer, ExplainerProps } from "./Explainer";
-import { video002Fixture } from "./fixtures/video002";
 import {
   CinematicRenderer,
   calculateCinematicMetadata,
@@ -22,13 +21,6 @@ import {
   SocialClipProps,
   calculateSocialClipMetadata,
 } from "./components/SocialClip";
-import {
-  short1HookFixture,
-  short2ObjetoFixture,
-  short3HistoriaFixture,
-  short4ConsecuenciasFixture,
-  short5LegadoFixture,
-} from "./fixtures/video002-shorts";
 import { artilugioLargoTemplate } from "./fixtures/templates/artilugioLargoTemplate";
 import { artilugioShortTemplate } from "./fixtures/templates/artilugioShortTemplate";
 
@@ -173,25 +165,6 @@ export const Root: React.FC = () => {
           captions: [],
           audio: {},
         }}
-        calculateMetadata={calculateMetadata}
-      />
-      {/* Dedicated composition for video 002 — defaultProps are baked into the
-          bundle (src/fixtures/video002.ts) instead of relying on the
-          Studio-only `--props` CLI flag. Rendering "Explainer" with empty
-          defaultProps ({cuts: []}) is what produced the
-          "durationInFrames evaluated to be 1800" render error: the render
-          worker re-runs calculateMetadata against the composition's baked
-          defaultProps, not whatever was loaded into the Studio session at
-          preview time. Select "Video002" (not "Explainer") to render this
-          video from the Studio GUI. */}
-      <Composition
-        id="Video002"
-        component={Explainer}
-        durationInFrames={30 * 60}
-        fps={30}
-        width={1920}
-        height={1080}
-        defaultProps={video002Fixture}
         calculateMetadata={calculateMetadata}
       />
       <Composition
@@ -358,61 +331,6 @@ export const Root: React.FC = () => {
           cropMode: "center",
         } as SocialClipProps}
         calculateMetadata={calculateSocialClipMetadata}
-      />
-      {/* Shorts reales del vídeo 002 (arco compuesto mongol) — montaje sobre
-          narración/imágenes/motion graphics ya generados para el vídeo largo
-          (props/video002.json), sin generar nada nuevo. Ver
-          src/fixtures/video002-shorts.ts y el guion técnico en la bóveda
-          Obsidian ("10-Redes Sociales/002 - Shorts del arco mongol.md"). */}
-      <Composition
-        id="Short002-01-Hook"
-        component={Explainer}
-        durationInFrames={30 * 30}
-        fps={30}
-        width={1080}
-        height={1920}
-        defaultProps={short1HookFixture}
-        calculateMetadata={calculateMetadata}
-      />
-      <Composition
-        id="Short002-02-Objeto"
-        component={Explainer}
-        durationInFrames={30 * 30}
-        fps={30}
-        width={1080}
-        height={1920}
-        defaultProps={short2ObjetoFixture}
-        calculateMetadata={calculateMetadata}
-      />
-      <Composition
-        id="Short002-03-Historia"
-        component={Explainer}
-        durationInFrames={30 * 30}
-        fps={30}
-        width={1080}
-        height={1920}
-        defaultProps={short3HistoriaFixture}
-        calculateMetadata={calculateMetadata}
-      />
-      <Composition
-        id="Short002-04-Consecuencias"
-        component={Explainer}
-        durationInFrames={30 * 30}
-        fps={30}
-        width={1080}
-        height={1920}
-        defaultProps={short4ConsecuenciasFixture}
-        calculateMetadata={calculateMetadata}
-      />
-      <Composition
-        id="Short002-05-Legado"
-        component={Explainer}
-        durationInFrames={30 * 30}
-        fps={30}
-        width={1080}
-        height={1920}
-        defaultProps={short5LegadoFixture}
-        calculateMetadata={calculateMetadata}
       />
       {/* Plantillas de referencia del canal Artilugio — video 002 (largo y
           shorts) ya está publicado; estas dos composiciones documentan la
