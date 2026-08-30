@@ -45,7 +45,10 @@ export const artilugioShortTemplate: ExplainerProps = {
   cuts: [
     {
       id: "example-1",
-      source: "video00X/images/1a.png",
+      // Asset real de video002 (ya publicado) solo para que esta plantilla
+      // se pueda previsualizar/renderizar como prueba — sustitúyelo por
+      // los assets del vídeo nuevo.
+      source: "video002/images/1a.png",
       in_seconds: 0.0,
       out_seconds: 11.3667,
       source_in_seconds: 0,
@@ -59,7 +62,7 @@ export const artilugioShortTemplate: ExplainerProps = {
     },
     {
       id: "example-2",
-      source: "video00X/images/1b.png",
+      source: "video002/images/1b.png",
       in_seconds: 11.3667,
       out_seconds: 18.1667,
       source_in_seconds: 0,

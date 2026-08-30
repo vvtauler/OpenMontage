@@ -422,7 +422,7 @@ export const Root: React.FC = () => {
           artilugioShortTemplate.ts — no son contenido para renderizar tal
           cual, son ejemplos comentados para copiar de ahí. */}
       <Composition
-        id="Artilugio_Largo"
+        id="Artilugio-Largo"
         component={Explainer}
         durationInFrames={30 * 60}
         fps={30}
@@ -432,7 +432,7 @@ export const Root: React.FC = () => {
         calculateMetadata={calculateMetadata}
       />
       <Composition
-        id="Artilugio_short"
+        id="Artilugio-short"
         component={Explainer}
         durationInFrames={30 * 30}
         fps={30}

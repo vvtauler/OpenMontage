@@ -37,7 +37,10 @@ export const artilugioLargoTemplate: ExplainerProps = {
   cuts: [
     {
       id: "example-image-cut",
-      source: "video00X/images/1a.png",
+      // Asset real de video002 (ya publicado) solo para que esta plantilla
+      // se pueda previsualizar/renderizar como prueba — sustitúyelo por
+      // los assets del vídeo nuevo.
+      source: "video002/images/1a.png",
       in_seconds: 0.0,
       out_seconds: 12.0,
       source_in_seconds: 0,
@@ -54,7 +57,8 @@ export const artilugioLargoTemplate: ExplainerProps = {
     },
     {
       id: "example-video-cut",
-      source: "video00X/video/clip.mp4",
+      // Asset real de video002 también aquí, por la misma razón.
+      source: "video002/video/Artilugio_Intro.mp4",
       in_seconds: 12.0,
       out_seconds: 18.0,
       source_in_seconds: 0,
