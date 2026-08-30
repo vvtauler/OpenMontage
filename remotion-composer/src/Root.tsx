@@ -29,6 +29,8 @@ import {
   short4ConsecuenciasFixture,
   short5LegadoFixture,
 } from "./fixtures/video002-shorts";
+import { artilugioLargoTemplate } from "./fixtures/templates/artilugioLargoTemplate";
+import { artilugioShortTemplate } from "./fixtures/templates/artilugioShortTemplate";
 
 // ---------------------------------------------------------------------------
 // Theme System — prevents every video from looking like dark fintech
@@ -410,6 +412,33 @@ export const Root: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={short5LegadoFixture}
+        calculateMetadata={calculateMetadata}
+      />
+      {/* Plantillas de referencia del canal Artilugio — video 002 (largo y
+          shorts) ya está publicado; estas dos composiciones documentan la
+          base técnica a reutilizar en próximos vídeos (qué es fijo del
+          canal vs. qué cambia por vídeo). Ver
+          src/fixtures/templates/artilugioLargoTemplate.ts y
+          artilugioShortTemplate.ts — no son contenido para renderizar tal
+          cual, son ejemplos comentados para copiar de ahí. */}
+      <Composition
+        id="Artilugio_Largo"
+        component={Explainer}
+        durationInFrames={30 * 60}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={artilugioLargoTemplate}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio_short"
+        component={Explainer}
+        durationInFrames={30 * 30}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={artilugioShortTemplate}
         calculateMetadata={calculateMetadata}
       />
       <Composition
