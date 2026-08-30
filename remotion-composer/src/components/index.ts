@@ -13,6 +13,8 @@ export { AnimeScene } from "./AnimeScene";
 export { TerminalScene } from "./TerminalScene";
 export { ScreenshotScene } from "./ScreenshotScene";
 export { ProviderChip } from "./ProviderChip";
+export { Rotulo } from "./Rotulo";
+export type { RotuloProps } from "./Rotulo";
 export type { ParticleType } from "./ParticleOverlay";
 export type { CameraMotion, AnimeSceneProps } from "./AnimeScene";
 export type { TerminalStep } from "./TerminalScene";

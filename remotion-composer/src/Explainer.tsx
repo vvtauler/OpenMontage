@@ -31,6 +31,7 @@ import { ListReveal } from "./components/ListReveal";
 import type { ListRevealItem } from "./components/ListReveal";
 import { PhotoInsert } from "./components/PhotoInsert";
 import { MonumentalTitle } from "./components/MonumentalTitle";
+import { Rotulo } from "./components/Rotulo";
 import { Watermark } from "./components/Watermark";
 import { CtaScene, CtaBackground } from "./components/ArtilugioCta";
 import { TerminalScene } from "./components/TerminalScene";
@@ -298,7 +299,7 @@ interface Cut {
 }
 
 interface Overlay {
-  type: "section_title" | "stat_reveal" | "hero_title" | "provider_chip" | "list_reveal" | "photo_insert" | "monumental_title";
+  type: "section_title" | "stat_reveal" | "hero_title" | "provider_chip" | "list_reveal" | "photo_insert" | "monumental_title" | "rotulo";
   in_seconds: number;
   out_seconds: number;
   text?: string;
@@ -322,6 +323,13 @@ interface Overlay {
   // oscuras, donde el texto blanco ya tiene contraste de sobra).
   widthRatio?: number;
   background?: boolean;
+  // rotulo — lower-third data/fact callout (or the "cta" subscribe variant).
+  // Reuses `text`/`subtitle` (mapped to Rotulo's `subtext`) and `position`
+  // above; `position` here is Rotulo's own set ("bottom-left" |
+  // "bottom-center" | "top-left"), not list_reveal/photo_insert's
+  // "left"/"right".
+  variant?: "label" | "cta";
+  iconSrc?: string;
 }
 
 interface AudioLayer {
@@ -1027,6 +1035,18 @@ const OverlayRenderer: React.FC<{ overlay: Overlay }> = ({ overlay }) => {
         attribution={overlay.attribution}
         position={(overlay.position as "left" | "right") || "right"}
         width={overlay.width}
+        sceneDurationSeconds={overlay.out_seconds - overlay.in_seconds}
+      />
+    );
+  }
+  if (overlay.type === "rotulo") {
+    return (
+      <Rotulo
+        text={overlay.text ?? ""}
+        variant={overlay.variant}
+        subtext={overlay.subtitle}
+        iconSrc={overlay.iconSrc}
+        position={(overlay.position as "bottom-left" | "bottom-center" | "top-left") || "bottom-center"}
         sceneDurationSeconds={overlay.out_seconds - overlay.in_seconds}
       />
     );
