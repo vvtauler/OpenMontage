@@ -23,6 +23,7 @@ import {
 } from "./components/SocialClip";
 import { artilugioLargoTemplate } from "./fixtures/templates/artilugioLargoTemplate";
 import { artilugioShortTemplate } from "./fixtures/templates/artilugioShortTemplate";
+import { video003 } from "./fixtures/video003";
 
 // ---------------------------------------------------------------------------
 // Theme System — prevents every video from looking like dark fintech
@@ -347,6 +348,21 @@ export const Root: React.FC = () => {
         width={1920}
         height={1080}
         defaultProps={artilugioLargoTemplate}
+        calculateMetadata={calculateMetadata}
+      />
+      {/* Preview de Fase 8 (Montaje) del video 003 - "La columna de hierro
+          de Delhi" - narracion sola por ahora, sfx/musica en curso. Quitar
+          esta composicion una vez el video este renderizado y publicado,
+          igual que se hizo con los preview de video001/002 (ver commit
+          "chore(remotion): drop preview-only compositions from Root.tsx"). */}
+      <Composition
+        id="Artilugio-Largo-003"
+        component={Explainer}
+        durationInFrames={30 * 60}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={video003}
         calculateMetadata={calculateMetadata}
       />
       <Composition

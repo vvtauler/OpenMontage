@@ -15,6 +15,8 @@ export { ScreenshotScene } from "./ScreenshotScene";
 export { ProviderChip } from "./ProviderChip";
 export { Rotulo } from "./Rotulo";
 export type { RotuloProps } from "./Rotulo";
+export { ImpactStamp } from "./ImpactStamp";
+export type { ImpactStampProps } from "./ImpactStamp";
 export type { ParticleType } from "./ParticleOverlay";
 export type { CameraMotion, AnimeSceneProps } from "./AnimeScene";
 export type { TerminalStep } from "./TerminalScene";

@@ -32,6 +32,7 @@ import type { ListRevealItem } from "./components/ListReveal";
 import { PhotoInsert } from "./components/PhotoInsert";
 import { MonumentalTitle } from "./components/MonumentalTitle";
 import { Rotulo } from "./components/Rotulo";
+import { ImpactStamp } from "./components/ImpactStamp";
 import { Watermark } from "./components/Watermark";
 import { CtaScene, CtaBackground } from "./components/ArtilugioCta";
 import { TerminalScene } from "./components/TerminalScene";
@@ -299,7 +300,7 @@ interface Cut {
 }
 
 interface Overlay {
-  type: "section_title" | "stat_reveal" | "hero_title" | "provider_chip" | "list_reveal" | "photo_insert" | "monumental_title" | "rotulo";
+  type: "section_title" | "stat_reveal" | "hero_title" | "provider_chip" | "list_reveal" | "photo_insert" | "monumental_title" | "rotulo" | "impact_stamp";
   in_seconds: number;
   out_seconds: number;
   text?: string;
@@ -1050,6 +1051,9 @@ const OverlayRenderer: React.FC<{ overlay: Overlay }> = ({ overlay }) => {
         sceneDurationSeconds={overlay.out_seconds - overlay.in_seconds}
       />
     );
+  }
+  if (overlay.type === "impact_stamp") {
+    return <ImpactStamp text={overlay.text ?? ""} />;
   }
   if (overlay.type === "monumental_title") {
     return (
