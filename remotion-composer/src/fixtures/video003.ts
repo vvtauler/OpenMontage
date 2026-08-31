@@ -184,7 +184,10 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "drift-up",
+      // Rejilla de 9 fotos en 2 filas - estática a pantalla completa, sin
+      // movimiento (pedido explícito de Víctor: el pan/zoom deformaría la
+      // lectura de la rejilla).
+      animation: "static",
     },
     {
       id: "3c",
