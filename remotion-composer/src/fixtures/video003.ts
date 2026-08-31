@@ -931,12 +931,22 @@ export const video003: ExplainerProps = {
       text: "Impacto de bala de cañón, 1739",
     },
     {
-      type: "rotulo",
+      type: "list_reveal",
       in_seconds: 388.22,
       out_seconds: 401.22,
-      variant: "label",
-      position: "bottom-center",
-      text: "Gupta → Tomara → Sultanato de Delhi → Mogol → Imperio británico",
+      position: "left",
+      // at_seconds relativo al propio inicio del plano (388.22), estimado
+      // proporcionalmente por longitud de la frase de locución — «Gupta,
+      // Tomara, sultanato de Delhi, mogoles, Imperio británico: el pilar ha
+      // sido testigo...» — los 5 nombres se dicen seguidos al principio del
+      // plano de 13s, el resto de la frase es mucho más larga.
+      items: [
+        { text: "Gupta", at_seconds: 0.4 },
+        { text: "Tomara", at_seconds: 1.0 },
+        { text: "Sultanato de Delhi", at_seconds: 2.4 },
+        { text: "Mogol", at_seconds: 3.0 },
+        { text: "Imperio británico", at_seconds: 4.3 },
+      ],
     },
     {
       type: "rotulo",
