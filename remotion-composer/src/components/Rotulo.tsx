@@ -43,6 +43,10 @@ export interface RotuloProps {
 const SAFE_MARGIN_X = 100;
 const SAFE_MARGIN_Y = 90;
 const FADE_SECONDS = 0.4;
+// CTA's fade-out is timed to land in sync with the background image's own
+// fade-to-black (Explainer.tsx's end-black cut crossfades over 0.5s) -
+// the default 0.4s left it visibly lagging behind (Víctor, 31 ago 2026).
+const CTA_FADE_OUT_SECONDS = 0.5;
 
 export const Rotulo: React.FC<RotuloProps> = ({
   text,
@@ -56,6 +60,9 @@ export const Rotulo: React.FC<RotuloProps> = ({
   const { fps } = useVideoConfig();
   const durationInFrames = Math.round(sceneDurationSeconds * fps);
   const fadeFrames = Math.round(FADE_SECONDS * fps);
+  const fadeOutFrames = Math.round(
+    (variant === "cta" ? CTA_FADE_OUT_SECONDS : FADE_SECONDS) * fps
+  );
 
   const fadeIn = interpolate(frame, [0, fadeFrames], [0, 1], {
     extrapolateLeft: "clamp",
@@ -63,7 +70,7 @@ export const Rotulo: React.FC<RotuloProps> = ({
   });
   const fadeOut = interpolate(
     frame,
-    [durationInFrames - fadeFrames, durationInFrames],
+    [durationInFrames - fadeOutFrames, durationInFrames],
     [1, 0],
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   );
