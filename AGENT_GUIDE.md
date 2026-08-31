@@ -703,6 +703,7 @@ The `.agents/skills/` directory is large. When you're not coming in through a to
 | How does a tool actually work? | the tool's `usage_location` from the registry |
 | How should this pipeline stage behave? | `skills/pipelines/<pipeline>/...` |
 | What is the checkpoint/review policy? | `skills/meta/` |
+| How should Artilugio's Instagram/TikTok shorts be produced (video 003+)? | `skills/meta/social-shorts-strategy.md` |
 
 ## What Not To Do
 

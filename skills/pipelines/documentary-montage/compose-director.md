@@ -81,6 +81,13 @@ For `social_short`, this usually means center-cropping 16:9 footage.
 For `youtube` with the cinematic 2.35:1 bar treatment, pad 140px
 black top and bottom on a 1920x1080 canvas.
 
+**Artilugio channel, video 003 onward:** this same-timeline
+center-crop treatment for `social_short` does not apply — its social
+shorts are separately scripted, narrated, and composed rather than a
+resized variant of `edit_decisions`. Read
+`skills/meta/social-shorts-strategy.md` before building a `social_short`
+target for this channel.
+
 Commit this in `render_report.metadata.canvas` and
 `render_report.metadata.letterbox`.
 

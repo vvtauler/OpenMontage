@@ -23,6 +23,13 @@ Group outputs as:
 - format variants,
 - chaptered or contextual variants.
 
+**Artilugio channel, video 003 onward:** the "short-form derivatives"
+for Instagram/TikTok are not a canvas resize of the master cut — they
+are separately scripted, narrated, and composed. Read
+`skills/meta/social-shorts-strategy.md` before treating this stage as
+a simple export step for the shorts; it covers cadence, hook rules,
+watermark/crop spec, duration ceiling, and CTA.
+
 ### 2. Preserve Source Truth In Packaging
 
 If the project uses interview footage, screen recording, or product footage as its anchor, the metadata should reflect that instead of packaging it like a pure generated piece.
