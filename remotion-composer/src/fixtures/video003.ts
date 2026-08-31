@@ -68,7 +68,10 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      // Sucesión de fotos en horizontal - pan-left mueve la imagen de
+      // derecha a izquierda (translateX +65 -> -65), pedido explícito de
+      // Víctor en vez del ken-burns por defecto.
+      animation: "pan-left",
     },
     {
       id: "1c",
