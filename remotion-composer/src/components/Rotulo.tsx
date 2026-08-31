@@ -48,6 +48,10 @@ const FADE_SECONDS = 0.4;
 // fade-to-black (Explainer.tsx's end-black cut crossfades over 0.5s) -
 // the default 0.4s left it visibly lagging behind (Víctor, 31 ago 2026).
 const CTA_FADE_OUT_SECONDS = 0.5;
+// Still visibly trailing the background's own fade even with matched
+// timing/curve - Víctor, 31 ago 2026: bring the trigger forward by 0.5s,
+// same duration.
+const CTA_FADE_OUT_ADVANCE_SECONDS = 0.5;
 
 export const Rotulo: React.FC<RotuloProps> = ({
   text,
@@ -74,17 +78,20 @@ export const Rotulo: React.FC<RotuloProps> = ({
   // spring({damping:18, stiffness:80})) — matching start + duration alone
   // (interpolate, linear) still visibly drifted apart from that curve's
   // shape. Non-CTA rótulos keep the simple linear fade.
+  const fadeOutAdvanceFrames =
+    variant === "cta" ? Math.round(CTA_FADE_OUT_ADVANCE_SECONDS * fps) : 0;
+  const fadeOutTriggerFrame = durationInFrames - fadeOutFrames - fadeOutAdvanceFrames;
   const fadeOut =
     variant === "cta"
       ? 1 -
         spring({
-          frame: frame - (durationInFrames - fadeOutFrames),
+          frame: frame - fadeOutTriggerFrame,
           fps,
           config: { damping: 18, stiffness: 80 },
         })
       : interpolate(
           frame,
-          [durationInFrames - fadeOutFrames, durationInFrames],
+          [fadeOutTriggerFrame, fadeOutTriggerFrame + fadeOutFrames],
           [1, 0],
           { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
         );
