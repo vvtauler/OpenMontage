@@ -20,7 +20,7 @@ import { ExplainerProps } from "../Explainer";
 //     plano completo sin desfase.
 //   - Cola final de 0.5s en negro tras el ultimo plano (7c).
 //
-// Duracion total: 685.38s (video termina en 684.88s,
+// Duracion total: 685.88s (video termina en 684.88s,
 // luego 0.5s de negro).
 // ---------------------------------------------------------------------------
 export const video003: ExplainerProps = {
@@ -771,9 +771,9 @@ export const video003: ExplainerProps = {
       id: "7a",
       source: "video003/images/7b.png",
       in_seconds: 663.36,
-      out_seconds: 684.88,
+      out_seconds: 685.38,
       transition_in: "fade_black",
-      transition_out: "fade_black",
+      transition_out: "cut",
       transition_duration: 0.5,
       animation: "zoom-in",
       transform: { scale: 1.06 },
@@ -782,8 +782,8 @@ export const video003: ExplainerProps = {
       id: "end-black",
       source: "video003/images/black.png",
       in_seconds: 684.88,
-      out_seconds: 685.38,
-      transition_in: "cut",
+      out_seconds: 685.88,
+      transition_in: "fade_black",
       transition_out: "cut",
       transition_duration: 0.5,
       animation: "static",
@@ -984,7 +984,7 @@ export const video003: ExplainerProps = {
     {
       type: "rotulo",
       in_seconds: 663.36,
-      out_seconds: 684.88,
+      out_seconds: 685.38,
       variant: "cta",
       position: "center",
       text: "SUSCRÍBETE",
