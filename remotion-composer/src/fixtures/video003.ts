@@ -835,22 +835,24 @@ export const video003: ExplainerProps = {
       text: "+100 piezas — 18 a 23 kg cada una",
     },
     {
-      type: "photo_insert",
+      type: "rotulo",
       in_seconds: 224.42,
       out_seconds: 233.14,
+      variant: "label",
+      position: "bottom-left",
+      text: "Vishnudhvaja — estandarte de Vishnú",
+    },
+    {
+      type: "photo_insert",
+      in_seconds: 231.72,
+      out_seconds: 247.08,
       source: "video003/images/researchers/fleet.jpg",
       caption: "John Faithfull Fleet",
       attribution: "1847 – 21 de febrero de 1917",
+      // Entra desde el lateral derecho (PhotoInsert.tsx: position="right"
+      // parte con translateX +50 y llega a 0, deslizándose desde fuera del
+      // encuadre por la derecha hasta su posición de reposo).
       position: "right",
-    },
-    {
-      type: "rotulo",
-      in_seconds: 231.72,
-      out_seconds: 247.08,
-      variant: "label",
-      position: "bottom-left",
-      text: "J. F. Fleet, 1888 — Corpus Inscriptionum Indicarum",
-      subtitle: "Chandragupta II Vikramaditya (r. 375–415 d.C.)",
     },
     {
       type: "rotulo",
