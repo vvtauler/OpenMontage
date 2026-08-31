@@ -835,12 +835,13 @@ export const video003: ExplainerProps = {
       text: "+100 piezas — 18 a 23 kg cada una",
     },
     {
-      type: "rotulo",
+      type: "photo_insert",
       in_seconds: 224.42,
       out_seconds: 233.14,
-      variant: "label",
-      position: "bottom-left",
-      text: "Vishnudhvaja — estandarte de Vishnú",
+      source: "video003/images/researchers/fleet.jpg",
+      caption: "John Faithfull Fleet",
+      attribution: "1847 – 21 de febrero de 1917",
+      position: "right",
     },
     {
       type: "rotulo",
