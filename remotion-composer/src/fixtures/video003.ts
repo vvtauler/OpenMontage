@@ -607,7 +607,9 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "pan-left",
+      // Estático (no pan-left) para que el fotograma congelado que reutiliza
+      // 5o sea una continuidad exacta, sin salto de encuadre.
+      animation: "static",
     },
     {
       id: "5o",
@@ -617,8 +619,9 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "zoom-in",
-      transform: { scale: 1.08 },
+      // Estático — continuación literal de 5n, el impacto lo da el sello,
+      // no un movimiento de cámara nuevo.
+      animation: "static",
     },
     {
       id: "5p",
@@ -762,7 +765,9 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "parallax",
+      // Estático (no parallax) para que el fotograma congelado que reutiliza
+      // 6i sea una continuidad exacta, sin salto de encuadre.
+      animation: "static",
     },
     {
       id: "6i",
@@ -772,8 +777,9 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "zoom-in",
-      transform: { scale: 1.08 },
+      // Estático — continuación literal de 6h, el impacto lo da el sello,
+      // no un movimiento de cámara nuevo.
+      animation: "static",
     },
     {
       id: "6j",
