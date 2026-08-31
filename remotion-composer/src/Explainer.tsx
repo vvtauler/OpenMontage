@@ -1047,7 +1047,7 @@ const OverlayRenderer: React.FC<{ overlay: Overlay }> = ({ overlay }) => {
         variant={overlay.variant}
         subtext={overlay.subtitle}
         iconSrc={overlay.iconSrc}
-        position={(overlay.position as "bottom-left" | "bottom-center" | "top-left") || "bottom-center"}
+        position={(overlay.position as "bottom-left" | "bottom-center" | "top-left" | "center") || "bottom-center"}
         sceneDurationSeconds={overlay.out_seconds - overlay.in_seconds}
       />
     );

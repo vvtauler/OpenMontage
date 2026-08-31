@@ -32,7 +32,7 @@ export interface RotuloProps {
   /** Optional secondary line under the main text (e.g. a correction note). */
   subtext?: string;
   iconSrc?: string;
-  position?: "bottom-left" | "bottom-center" | "top-left";
+  position?: "bottom-left" | "bottom-center" | "top-left" | "center";
   /** Real Sequence duration in seconds — see the same CRITICAL FIX note as
    * ImageScene/AnimeScene: useVideoConfig().durationInFrames is the full
    * composition length, not this overlay's own on-screen duration. */
@@ -73,7 +73,8 @@ export const Rotulo: React.FC<RotuloProps> = ({
 
   const isCta = variant === "cta";
   const isTop = position === "top-left";
-  const alignH = position === "bottom-center" ? "center" : "flex-start";
+  const isCenter = position === "center";
+  const alignH = position === "bottom-center" || isCenter ? "center" : "flex-start";
 
   // CTA: +50% over the original label sizing (icon 56->84, text 44->66).
   // Label: a modest bump over the original (32->38, subtext 20->24).
@@ -84,7 +85,7 @@ export const Rotulo: React.FC<RotuloProps> = ({
   return (
     <AbsoluteFill
       style={{
-        justifyContent: isTop ? "flex-start" : "flex-end",
+        justifyContent: isCenter ? "center" : isTop ? "flex-start" : "flex-end",
         alignItems: alignH,
         padding: `${SAFE_MARGIN_Y}px ${SAFE_MARGIN_X}px`,
         pointerEvents: "none",

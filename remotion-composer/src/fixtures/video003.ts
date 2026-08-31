@@ -986,7 +986,7 @@ export const video003: ExplainerProps = {
       in_seconds: 663.36,
       out_seconds: 684.88,
       variant: "cta",
-      position: "bottom-left",
+      position: "center",
       text: "SUSCRÍBETE",
       iconSrc: "video003/images/brand/isotipo.png",
     },
