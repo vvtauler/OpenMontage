@@ -1034,7 +1034,7 @@ const OverlayRenderer: React.FC<{ overlay: Overlay }> = ({ overlay }) => {
         source={overlay.source}
         caption={overlay.caption}
         attribution={overlay.attribution}
-        position={(overlay.position as "left" | "right") || "right"}
+        position={(overlay.position as "left" | "right" | "top-left" | "top-right") || "right"}
         width={overlay.width}
         sceneDurationSeconds={overlay.out_seconds - overlay.in_seconds}
       />

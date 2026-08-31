@@ -886,8 +886,17 @@ export const video003: ExplainerProps = {
       out_seconds: 341.48,
       variant: "label",
       position: "bottom-left",
-      text: "Hipótesis alternativa — F. B. Flood",
+      text: "Hipótesis alternativa",
       subtitle: "botín de guerra, s. XIII (Iltutmish)",
+    },
+    {
+      type: "photo_insert",
+      in_seconds: 328.22, // 1s de margen respecto al inicio del plano (327.22)
+      out_seconds: 341.48,
+      source: "video003/images/researchers/flood.webp",
+      caption: "Finbarr Barry Flood",
+      // Sin segunda línea (sin attribution), a diferencia de la de Fleet.
+      position: "top-right",
     },
     {
       type: "rotulo",

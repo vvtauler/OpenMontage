@@ -31,7 +31,9 @@ export interface PhotoInsertProps {
   caption?: string;
   /** Rights/credit line — bottom line, smaller. E.g. "Museo de Cluny — dominio público". */
   attribution?: string;
-  position?: "left" | "right";
+  /** "left"/"right" (default, bottom-anchored) or "top-left"/"top-right"
+   * to anchor the insert to the top of the frame instead. */
+  position?: "left" | "right" | "top-left" | "top-right";
   /** Insert width in px. Default 420. */
   width?: number;
   /** Real Sequence duration in seconds — same CRITICAL FIX pattern as
@@ -67,14 +69,15 @@ export const PhotoInsert: React.FC<PhotoInsertProps> = ({
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   );
   const opacity = Math.min(fadeIn, fadeOut);
-  const isRight = position === "right";
+  const isRight = position === "right" || position === "top-right";
+  const isTop = position === "top-left" || position === "top-right";
   const translateX = interpolate(fadeIn, [0, 1], [isRight ? 50 : -50, 0]);
   const rotation = isRight ? 1.5 : -1.5;
 
   return (
     <AbsoluteFill
       style={{
-        justifyContent: "flex-end",
+        justifyContent: isTop ? "flex-start" : "flex-end",
         alignItems: isRight ? "flex-end" : "flex-start",
         padding: SAFE_MARGIN,
         pointerEvents: "none",
