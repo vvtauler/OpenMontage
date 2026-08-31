@@ -836,14 +836,6 @@ export const video003: ExplainerProps = {
     },
     {
       type: "rotulo",
-      in_seconds: 202.22,
-      out_seconds: 215.06,
-      variant: "label",
-      position: "bottom-left",
-      text: "Inscripción sánscrita, escritura Brahmi — elogio al rey Chandra",
-    },
-    {
-      type: "rotulo",
       in_seconds: 224.42,
       out_seconds: 233.14,
       variant: "label",
