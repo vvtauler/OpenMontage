@@ -100,7 +100,15 @@ export const Rotulo: React.FC<RotuloProps> = ({
           gap: 18,
           maxWidth: "85%",
           ...(isCta
-            ? {}
+            ? {
+                // Semi-transparent black backing — makes the CTA stand out
+                // against a busy/bright background instead of floating
+                // bare (Víctor, 31 ago 2026).
+                background: "rgba(0, 0, 0, 0.55)",
+                borderRadius: 10,
+                padding: "22px 40px",
+                boxShadow: "0 10px 28px rgba(0,0,0,0.45)",
+              }
             : {
                 background: `${AZUL_TECNICO}D9`, // ~85% opacity, matches ListReveal's panel
                 borderLeft: `4px solid ${BRONCE_FORJADO}`,
