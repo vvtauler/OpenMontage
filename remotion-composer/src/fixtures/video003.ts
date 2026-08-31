@@ -5,20 +5,26 @@ import { ExplainerProps } from "../Explainer";
 // oxida" (canal Artilugio). Generado desde el guion tecnico 015 (boveda
 // Obsidian) - 73 planos, 24 rotulos, 2 impact_stamp (5o/6i).
 //
-// Fuentes de assets referenciadas por ruta absoluta de la boveda (resueltas
-// a file:// por resolveAsset.ts) - sin copiar a remotion-composer/public/.
-// audio.sfx y audio.music quedan pendientes de mezcla (Fase 8, en curso);
-// esta primera pasada solo trae narracion para verificar sincronismo visual
-// en el visor de Remotion Studio.
+// Assets copiados a remotion-composer/public/video003/{images,video,audio}
+// y referenciados por ruta relativa (staticFile) - NO por ruta absoluta de
+// la boveda: el visor de Remotion Studio corre en un navegador normal (via
+// WSL2 -> localhost), que no puede cargar file:// desde una pagina servida
+// por http:// (visto en produccion: video en negro con rutas absolutas
+// /mnt/j/... aunque resolveAsset.ts las resuelve bien para el RENDER
+// headless). Publico solo para render/preview; la boveda sigue siendo la
+// fuente canonica.
 //
-// Duracion total (ultimo plano, 7c): 669.38s - coincide con la
-// narracion concatenada (narration-final.mp3, 669.38s +/- redondeo).
+// Musica y SFX ya mezclados a los niveles de pipeline (narracion 0 dB,
+// sfx -15 dBFS, musica -25 dBFS - ver projects/003-columna-hierro-delhi/
+// _mix_sfx_track.py y _rebuild_music.py).
+//
+// Duracion total (ultimo plano, 7c): 669.38s.
 // ---------------------------------------------------------------------------
 export const video003: ExplainerProps = {
   cuts: [
     {
       id: "1a",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/1a.png",
+      source: "video003/images/1a.png",
       in_seconds: 0.0,
       out_seconds: 5.56,
       transition_in: "fade_black",
@@ -28,7 +34,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "1b",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/1b.png",
+      source: "video003/images/1b.png",
       in_seconds: 5.56,
       out_seconds: 15.16,
       transition_in: "cut",
@@ -38,7 +44,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "1c",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/1c.png",
+      source: "video003/images/1c.png",
       in_seconds: 15.16,
       out_seconds: 19.08,
       transition_in: "cut",
@@ -48,7 +54,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "1d",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/1d.png",
+      source: "video003/images/1d.png",
       in_seconds: 19.08,
       out_seconds: 24.48,
       transition_in: "cut",
@@ -58,7 +64,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "1e",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/1e.png",
+      source: "video003/images/1e.png",
       in_seconds: 24.48,
       out_seconds: 31.04,
       transition_in: "cut",
@@ -68,7 +74,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "2a",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/2a.png",
+      source: "video003/images/2a.png",
       in_seconds: 31.19,
       out_seconds: 36.53,
       transition_in: "fade_black",
@@ -78,7 +84,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "2b",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/2b.png",
+      source: "video003/images/2b.png",
       in_seconds: 36.53,
       out_seconds: 50.33,
       transition_in: "cut",
@@ -88,7 +94,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "2c",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/2c.png",
+      source: "video003/images/2c.png",
       in_seconds: 50.33,
       out_seconds: 55.41,
       transition_in: "cut",
@@ -98,7 +104,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "2d",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-2d-temperatura-horno-vs-fusion.mp4",
+      source: "video003/video/plano-2d-temperatura-horno-vs-fusion.mp4",
       in_seconds: 55.46,
       out_seconds: 66.76,
       source_in_seconds: 0,
@@ -109,7 +115,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "2e",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/2e.png",
+      source: "video003/images/2e.png",
       in_seconds: 66.76,
       out_seconds: 79.02,
       transition_in: "cut",
@@ -119,7 +125,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "2f",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/2f.png",
+      source: "video003/images/2f.png",
       in_seconds: 79.02,
       out_seconds: 89.7,
       transition_in: "cut",
@@ -129,7 +135,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "3a",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/3a.png",
+      source: "video003/images/3a.png",
       in_seconds: 90.15,
       out_seconds: 102.55,
       transition_in: "fade_black",
@@ -139,7 +145,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "3b",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/3b.png",
+      source: "video003/images/3b.png",
       in_seconds: 102.55,
       out_seconds: 109.83,
       transition_in: "cut",
@@ -149,7 +155,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "3c",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/3c.png",
+      source: "video003/images/3c.png",
       in_seconds: 110.05,
       out_seconds: 114.41,
       transition_in: "cut",
@@ -159,7 +165,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "3d",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-3d-lineas-soldadura.mp4",
+      source: "video003/video/plano-3d-lineas-soldadura.mp4",
       in_seconds: 114.41,
       out_seconds: 126.01,
       source_in_seconds: 0,
@@ -170,7 +176,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "3e",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-3e-fundido-vs-forjado.mp4",
+      source: "video003/video/plano-3e-fundido-vs-forjado.mp4",
       in_seconds: 126.01,
       out_seconds: 135.37,
       source_in_seconds: 0,
@@ -181,7 +187,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "3f",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-3f-dimensiones.mp4",
+      source: "video003/video/plano-3f-dimensiones.mp4",
       in_seconds: 135.63,
       out_seconds: 152.59,
       source_in_seconds: 0,
@@ -192,7 +198,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "3g",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-3g-composicion-fe.mp4",
+      source: "video003/video/plano-3g-composicion-fe.mp4",
       in_seconds: 152.59,
       out_seconds: 163.91,
       source_in_seconds: 0,
@@ -203,7 +209,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "3h",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-3h-revelacion-fosforo.mp4",
+      source: "video003/video/plano-3h-revelacion-fosforo.mp4",
       in_seconds: 164.23,
       out_seconds: 177.15,
       source_in_seconds: 0,
@@ -214,7 +220,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "3i",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-3i-comparacion-fosforo.mp4",
+      source: "video003/video/plano-3i-comparacion-fosforo.mp4",
       in_seconds: 177.15,
       out_seconds: 192.43,
       source_in_seconds: 0,
@@ -225,7 +231,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4a",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/4a.png",
+      source: "video003/images/4a.png",
       in_seconds: 192.86,
       out_seconds: 197.22,
       transition_in: "fade_black",
@@ -235,7 +241,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4b",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/4b.png",
+      source: "video003/images/4b.png",
       in_seconds: 197.22,
       out_seconds: 210.06,
       transition_in: "cut",
@@ -245,7 +251,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4c",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-4c-mapa-campanas.mp4",
+      source: "video003/video/plano-4c-mapa-campanas.mp4",
       in_seconds: 210.06,
       out_seconds: 219.42,
       source_in_seconds: 0,
@@ -256,7 +262,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4d",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/4d.png",
+      source: "video003/images/4d.png",
       in_seconds: 219.42,
       out_seconds: 228.14,
       transition_in: "cut",
@@ -266,7 +272,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4e",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/4e.png",
+      source: "video003/images/4e.png",
       in_seconds: 226.72,
       out_seconds: 242.08,
       transition_in: "cut",
@@ -276,7 +282,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4f",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/4f.png",
+      source: "video003/images/4f.png",
       in_seconds: 242.08,
       out_seconds: 256.32,
       transition_in: "cut",
@@ -286,7 +292,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4g",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/4g.png",
+      source: "video003/images/4g.png",
       in_seconds: 256.47,
       out_seconds: 270.47,
       transition_in: "cut",
@@ -296,7 +302,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4h",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-4h-alineacion-solsticio.mp4",
+      source: "video003/video/plano-4h-alineacion-solsticio.mp4",
       in_seconds: 270.47,
       out_seconds: 281.47,
       source_in_seconds: 0,
@@ -307,7 +313,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4i",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/4i.png",
+      source: "video003/images/4i.png",
       in_seconds: 281.47,
       out_seconds: 286.47,
       transition_in: "cut",
@@ -317,7 +323,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4j",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/4j.png",
+      source: "video003/images/4j.png",
       in_seconds: 286.22,
       out_seconds: 296.46,
       transition_in: "cut",
@@ -327,7 +333,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4k",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/4k.png",
+      source: "video003/images/4k.png",
       in_seconds: 296.46,
       out_seconds: 310.7,
       transition_in: "cut",
@@ -337,7 +343,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4l",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/4l.png",
+      source: "video003/images/4l.png",
       in_seconds: 310.7,
       out_seconds: 322.22,
       transition_in: "cut",
@@ -347,7 +353,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4m",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/4m.png",
+      source: "video003/images/4m.png",
       in_seconds: 322.22,
       out_seconds: 336.48,
       transition_in: "cut",
@@ -357,7 +363,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4n",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/4n.png",
+      source: "video003/images/4n.png",
       in_seconds: 336.87,
       out_seconds: 348.87,
       transition_in: "cut",
@@ -367,7 +373,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4o",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/4o.png",
+      source: "video003/images/4o.png",
       in_seconds: 348.87,
       out_seconds: 361.61,
       transition_in: "cut",
@@ -377,7 +383,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4p",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/4p.png",
+      source: "video003/images/4p.png",
       in_seconds: 361.61,
       out_seconds: 368.35,
       transition_in: "cut",
@@ -387,7 +393,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4q",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/4q.png",
+      source: "video003/images/4q.png",
       in_seconds: 368.82,
       out_seconds: 379.1,
       transition_in: "cut",
@@ -397,7 +403,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4r",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/4r.png",
+      source: "video003/images/4r.png",
       in_seconds: 379.1,
       out_seconds: 383.22,
       transition_in: "cut",
@@ -407,7 +413,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "4s",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/4s.png",
+      source: "video003/images/4s.png",
       in_seconds: 383.22,
       out_seconds: 396.22,
       transition_in: "cut",
@@ -417,7 +423,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5a",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/5a.png",
+      source: "video003/images/5a.png",
       in_seconds: 396.43,
       out_seconds: 406.59,
       transition_in: "fade_black",
@@ -427,7 +433,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5b",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/5b.png",
+      source: "video003/images/5b.png",
       in_seconds: 406.59,
       out_seconds: 418.15,
       transition_in: "cut",
@@ -437,7 +443,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5c",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-5c-5g-fases-oxidacion.mp4",
+      source: "video003/video/plano-5c-5g-fases-oxidacion.mp4",
       in_seconds: 418.43,
       out_seconds: 429.87,
       source_in_seconds: 0.0,
@@ -448,7 +454,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5d",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-5c-5g-fases-oxidacion.mp4",
+      source: "video003/video/plano-5c-5g-fases-oxidacion.mp4",
       in_seconds: 429.87,
       out_seconds: 436.31,
       source_in_seconds: 11.44,
@@ -459,7 +465,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5e",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-5c-5g-fases-oxidacion.mp4",
+      source: "video003/video/plano-5c-5g-fases-oxidacion.mp4",
       in_seconds: 436.31,
       out_seconds: 441.67,
       source_in_seconds: 17.88,
@@ -470,7 +476,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5f",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-5c-5g-fases-oxidacion.mp4",
+      source: "video003/video/plano-5c-5g-fases-oxidacion.mp4",
       in_seconds: 441.67,
       out_seconds: 452.67,
       source_in_seconds: 23.24,
@@ -481,7 +487,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5g",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-5c-5g-fases-oxidacion.mp4",
+      source: "video003/video/plano-5c-5g-fases-oxidacion.mp4",
       in_seconds: 452.67,
       out_seconds: 458.11,
       source_in_seconds: 34.24,
@@ -492,7 +498,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5h",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/5h.png",
+      source: "video003/images/5h.png",
       in_seconds: 458.21,
       out_seconds: 464.57,
       transition_in: "cut",
@@ -502,7 +508,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5i",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/5i.png",
+      source: "video003/images/5i.png",
       in_seconds: 464.57,
       out_seconds: 468.53,
       transition_in: "cut",
@@ -512,7 +518,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5j",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-5j-5k-condiciones.mp4",
+      source: "video003/video/plano-5j-5k-condiciones.mp4",
       in_seconds: 468.74,
       out_seconds: 478.1,
       source_in_seconds: 0.0,
@@ -523,7 +529,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5k",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-5j-5k-condiciones.mp4",
+      source: "video003/video/plano-5j-5k-condiciones.mp4",
       in_seconds: 478.1,
       out_seconds: 488.3,
       source_in_seconds: 9.36,
@@ -534,7 +540,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5l",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/5l.png",
+      source: "video003/images/5l.png",
       in_seconds: 488.3,
       out_seconds: 497.14,
       transition_in: "cut",
@@ -544,7 +550,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5m",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-5m-cierre-condiciones.mp4",
+      source: "video003/video/plano-5m-cierre-condiciones.mp4",
       in_seconds: 497.14,
       out_seconds: 506.82,
       source_in_seconds: 0,
@@ -555,7 +561,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5n",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/5n.png",
+      source: "video003/images/5n.png",
       in_seconds: 507.17,
       out_seconds: 517.41,
       transition_in: "cut",
@@ -565,7 +571,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5o",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/5n.png",
+      source: "video003/images/5n.png",
       in_seconds: 517.41,
       out_seconds: 518.53,
       transition_in: "cut",
@@ -575,7 +581,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5p",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/5p.png",
+      source: "video003/images/5p.png",
       in_seconds: 518.53,
       out_seconds: 530.01,
       transition_in: "cut",
@@ -585,7 +591,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5q",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-5q-corrosion-enterrada.mp4",
+      source: "video003/video/plano-5q-corrosion-enterrada.mp4",
       in_seconds: 530.09,
       out_seconds: 542.73,
       source_in_seconds: 0,
@@ -596,7 +602,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5r",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/5r.png",
+      source: "video003/images/5r.png",
       in_seconds: 542.73,
       out_seconds: 550.73,
       transition_in: "cut",
@@ -606,7 +612,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5s",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/5s.png",
+      source: "video003/images/5s.png",
       in_seconds: 550.71,
       out_seconds: 562.83,
       transition_in: "cut",
@@ -616,7 +622,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5t",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/5t.png",
+      source: "video003/images/5t.png",
       in_seconds: 562.83,
       out_seconds: 573.85,
       transition_in: "cut",
@@ -626,7 +632,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "5u",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/5u.png",
+      source: "video003/images/5u.png",
       in_seconds: 573.85,
       out_seconds: 578.35,
       transition_in: "cut",
@@ -636,7 +642,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "6a",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/6a.png",
+      source: "video003/images/6a.png",
       in_seconds: 578.66,
       out_seconds: 585.46,
       transition_in: "fade_black",
@@ -646,7 +652,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "6b",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/6b.png",
+      source: "video003/images/6b.png",
       in_seconds: 585.46,
       out_seconds: 588.58,
       transition_in: "cut",
@@ -656,7 +662,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "6c",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-6c-replica-laboratorio.mp4",
+      source: "video003/video/plano-6c-replica-laboratorio.mp4",
       in_seconds: 588.58,
       out_seconds: 601.22,
       source_in_seconds: 0,
@@ -667,7 +673,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "6d",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/6d.png",
+      source: "video003/images/6d.png",
       in_seconds: 601.22,
       out_seconds: 604.58,
       transition_in: "cut",
@@ -677,7 +683,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "6e",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Video/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/plano-6e-fragilidad-frio.mp4",
+      source: "video003/video/plano-6e-fragilidad-frio.mp4",
       in_seconds: 604.89,
       out_seconds: 615.57,
       source_in_seconds: 0,
@@ -688,7 +694,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "6f",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/6f.png",
+      source: "video003/images/6f.png",
       in_seconds: 615.57,
       out_seconds: 626.91,
       transition_in: "cut",
@@ -698,7 +704,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "6g",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/6g.png",
+      source: "video003/images/6g.png",
       in_seconds: 626.91,
       out_seconds: 632.21,
       transition_in: "cut",
@@ -708,7 +714,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "6h",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/6h.png",
+      source: "video003/images/6h.png",
       in_seconds: 632.32,
       out_seconds: 642.56,
       transition_in: "cut",
@@ -718,7 +724,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "6i",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/6h.png",
+      source: "video003/images/6h.png",
       in_seconds: 642.56,
       out_seconds: 643.8,
       transition_in: "cut",
@@ -728,7 +734,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "6j",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/6j.png",
+      source: "video003/images/6j.png",
       in_seconds: 643.8,
       out_seconds: 647.56,
       transition_in: "cut",
@@ -738,7 +744,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "7a",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/7a.png",
+      source: "video003/images/7a.png",
       in_seconds: 647.86,
       out_seconds: 657.58,
       transition_in: "fade_black",
@@ -748,7 +754,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "7b",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/7b.png",
+      source: "video003/images/7b.png",
       in_seconds: 657.58,
       out_seconds: 662.66,
       transition_in: "cut",
@@ -758,7 +764,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "7c",
-      source: "/mnt/j/Boveda_Personal/Mi_Cabeza/01-Proyectos/YouTube_Faceless/09-Almacen/Assets/Imagenes/003 - El secreto de la columna de hierro de Delhi que nunca se oxida/7c.png",
+      source: "video003/images/7c.png",
       in_seconds: 662.66,
       out_seconds: 669.38,
       transition_in: "cut",
@@ -982,12 +988,8 @@ export const video003: ExplainerProps = {
   themeConfig: { backgroundColor: "#000000" },
   captions: [],
   audio: {
-    narration: { src: "/home/vvt/OpenMontage/.claude/worktrees/Artilugio/projects/003-columna-hierro-delhi/assets/audio/narration-final.mp3", volume: 1.0 },
-    // Pre-mixed at pipeline levels (Herramientas y pipeline IA - "Niveles de
-    // mezcla de audio"): sfx bed peak-normalized to -15 dBFS, music bed to
-    // -25 dBFS, narration left untouched at 0 dB reference - same approach
-    // as video002's _mix_sfx_track.py / _rebuild_music_v2.py.
-    sfx: { src: "/home/vvt/OpenMontage/.claude/worktrees/Artilugio/projects/003-columna-hierro-delhi/assets/audio/sfx-final.mp3", volume: 1.0 },
-    music: { src: "/home/vvt/OpenMontage/.claude/worktrees/Artilugio/projects/003-columna-hierro-delhi/assets/music/music-final.mp3", volume: 1.0 },
+    narration: { src: "video003/audio/narration-final.mp3", volume: 1.0 },
+    sfx: { src: "video003/audio/sfx-final.mp3", volume: 1.0 },
+    music: { src: "video003/audio/music-final.mp3", volume: 1.0 },
   },
 };
