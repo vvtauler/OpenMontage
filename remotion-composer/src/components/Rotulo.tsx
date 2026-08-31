@@ -2,6 +2,7 @@ import {
   AbsoluteFill,
   Img,
   interpolate,
+  spring,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
@@ -68,12 +69,25 @@ export const Rotulo: React.FC<RotuloProps> = ({
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const fadeOut = interpolate(
-    frame,
-    [durationInFrames - fadeOutFrames, durationInFrames],
-    [1, 0],
-    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
-  );
+  // CTA uses the exact same spring (config, frame origin) as the
+  // background image's own fade-to-black (Explainer.tsx's end-black cut:
+  // spring({damping:18, stiffness:80})) — matching start + duration alone
+  // (interpolate, linear) still visibly drifted apart from that curve's
+  // shape. Non-CTA rótulos keep the simple linear fade.
+  const fadeOut =
+    variant === "cta"
+      ? 1 -
+        spring({
+          frame: frame - (durationInFrames - fadeOutFrames),
+          fps,
+          config: { damping: 18, stiffness: 80 },
+        })
+      : interpolate(
+          frame,
+          [durationInFrames - fadeOutFrames, durationInFrames],
+          [1, 0],
+          { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+        );
   const opacity = Math.min(fadeIn, fadeOut);
   // Small rise-in on entry, matching the fade — keeps it from feeling static.
   const translateY = interpolate(fadeIn, [0, 1], [10, 0]);
