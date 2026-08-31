@@ -43,15 +43,17 @@ export const ImpactStamp: React.FC<ImpactStampProps> = ({ text }) => {
     extrapolateRight: "clamp",
   });
 
-  // Rigid spring stamp entrance, resolved in 3-4 frames — high damping,
-  // no overshoot, like a stamp slammed down once.
+  // Fast zoom-out entrance — starts big and close, rushes down to its
+  // final resting size/rotation, like the stamp itself being slammed onto
+  // the frame. High damping / no overshoot so it locks in firmly instead
+  // of wobbling once it lands.
   const scale = spring({
     frame,
     fps,
-    from: 1.4,
+    from: 3.5,
     to: 1,
-    durationInFrames: 4,
-    config: { damping: 200, mass: 0.5 },
+    durationInFrames: 8,
+    config: { damping: 200, mass: 0.6 },
   });
   const opacity = interpolate(frame, [0, 2], [0, 1], {
     extrapolateLeft: "clamp",
