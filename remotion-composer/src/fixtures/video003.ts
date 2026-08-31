@@ -12,12 +12,23 @@ import { ExplainerProps } from "../Explainer";
 // cargar file:// desde una pagina servida por http://.
 //
 // Intro de canal (Identidad-Visual/Artilugio_Intro.mp4, 5.0s, audio propio
-// horneado) insertada tras el Hook (1e, t=31.19s) y antes de Contexto
-// (2a) - a peticion de Victor ("introduce la intro del canal despues del
-// hook"). Se abrio un hueco de silencio de 5.0s en las tres pistas
-// de audio finales (narracion/sfx/musica) en ese mismo punto para que
-// sigan sincronizadas con el resto de planos, todos desplazados +5.0s
-// a partir de ahi (ver tmp/splice_intro_gap.py).
+// via audioSrc porque los cuts de video se renderizan muted) insertada tras
+// el Hook (1e, t=31.19s) y antes de Contexto (2a). Hueco de silencio de
+// 5.0s abierto en narracion/sfx/musica en ese mismo punto; todo lo
+// posterior desplazado +5.0s.
+//
+// Ken Burns variado por bucket de duracion del plano (31 ago 2026 - antes
+// todos los cuts de imagen usaban "ken-burns" fijo, lo que en planos cortos
+// se leia como un zoom desproporcionadamente rapido y, en conjunto, como un
+// unico movimiento repetido en todo el video): <5s static/zoom leve/drift,
+// 5-8s zoom/drift/pan-edge, 8-12s ken-burns/pan/parallax, >=12s el set
+// completo - alternando dentro de cada bucket para no repetir el mismo
+// movimiento en dos planos seguidos.
+//
+// Rotulo.tsx alineado con el estilo ya establecido en MonumentalTitle.tsx /
+// ListReveal.tsx en esta rama (panel Azul Tecnico + acento Bronce Forjado +
+// sombra de profundidad, en vez de la barra Acero Hierro anterior; brillo
+// Cobre Calido en el texto CTA sin panel, igual que MonumentalTitle).
 //
 // Musica y SFX mezclados a los niveles de pipeline (narracion 0 dB,
 // sfx -15 dBFS, musica -25 dBFS).
@@ -35,9 +46,6 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "fade_black",
       transition_duration: 0.5,
-      // OffthreadVideo cuts render muted (see VideoScene in Explainer.tsx) -
-      // this bumper's own baked-in stinger needs the per-cut audio path
-      // instead, or it would play silent.
       audioSrc: "video003/audio/intro-sfx.mp3",
       audioVolume: 1.0,
     },
@@ -49,7 +57,8 @@ export const video003: ExplainerProps = {
       transition_in: "fade_black",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "zoom-in",
+      transform: { scale: 1.14 },
     },
     {
       id: "1b",
@@ -69,7 +78,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "static",
     },
     {
       id: "1d",
@@ -79,7 +88,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "drift-up",
     },
     {
       id: "1e",
@@ -89,7 +98,8 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "zoom-out",
+      transform: { scale: 1.14 },
     },
     {
       id: "2a",
@@ -99,7 +109,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-edge-left-to-right",
     },
     {
       id: "2b",
@@ -119,7 +129,8 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "zoom-in",
+      transform: { scale: 1.14 },
     },
     {
       id: "2d",
@@ -140,7 +151,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-right",
     },
     {
       id: "2f",
@@ -150,7 +161,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-left",
     },
     {
       id: "3a",
@@ -160,7 +171,7 @@ export const video003: ExplainerProps = {
       transition_in: "fade_black",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "parallax",
     },
     {
       id: "3b",
@@ -170,7 +181,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "drift-up",
     },
     {
       id: "3c",
@@ -180,7 +191,8 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "zoom-in",
+      transform: { scale: 1.08 },
     },
     {
       id: "3d",
@@ -256,7 +268,7 @@ export const video003: ExplainerProps = {
       transition_in: "fade_black",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "drift-up",
     },
     {
       id: "4b",
@@ -266,7 +278,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-left",
     },
     {
       id: "4c",
@@ -287,7 +299,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "parallax",
     },
     {
       id: "4e",
@@ -297,7 +309,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-edge-left-to-right",
     },
     {
       id: "4f",
@@ -317,7 +329,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-right",
     },
     {
       id: "4h",
@@ -338,7 +350,8 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "zoom-out",
+      transform: { scale: 1.14 },
     },
     {
       id: "4j",
@@ -348,7 +361,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-right",
     },
     {
       id: "4k",
@@ -358,7 +371,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "parallax",
     },
     {
       id: "4l",
@@ -378,7 +391,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-left",
     },
     {
       id: "4n",
@@ -388,7 +401,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-edge-left-to-right",
     },
     {
       id: "4o",
@@ -408,7 +421,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-edge-left-to-right",
     },
     {
       id: "4q",
@@ -418,7 +431,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-left",
     },
     {
       id: "4r",
@@ -428,7 +441,8 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "zoom-out",
+      transform: { scale: 1.08 },
     },
     {
       id: "4s",
@@ -438,7 +452,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-right",
     },
     {
       id: "5a",
@@ -448,7 +462,7 @@ export const video003: ExplainerProps = {
       transition_in: "fade_black",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "parallax",
     },
     {
       id: "5b",
@@ -458,7 +472,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-right",
     },
     {
       id: "5c",
@@ -523,7 +537,8 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "zoom-in",
+      transform: { scale: 1.14 },
     },
     {
       id: "5i",
@@ -533,7 +548,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "static",
     },
     {
       id: "5j",
@@ -586,7 +601,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-left",
     },
     {
       id: "5o",
@@ -596,7 +611,8 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "zoom-in",
+      transform: { scale: 1.08 },
     },
     {
       id: "5p",
@@ -606,7 +622,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "parallax",
     },
     {
       id: "5q",
@@ -627,7 +643,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-right",
     },
     {
       id: "5s",
@@ -637,7 +653,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "parallax",
     },
     {
       id: "5t",
@@ -657,7 +673,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "drift-up",
     },
     {
       id: "6a",
@@ -667,7 +683,7 @@ export const video003: ExplainerProps = {
       transition_in: "fade_black",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-edge-left-to-right",
     },
     {
       id: "6b",
@@ -677,7 +693,8 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "zoom-out",
+      transform: { scale: 1.08 },
     },
     {
       id: "6c",
@@ -698,7 +715,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "static",
     },
     {
       id: "6e",
@@ -719,7 +736,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-left",
     },
     {
       id: "6g",
@@ -729,7 +746,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-edge-left-to-right",
     },
     {
       id: "6h",
@@ -739,7 +756,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "parallax",
     },
     {
       id: "6i",
@@ -749,7 +766,8 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "zoom-in",
+      transform: { scale: 1.08 },
     },
     {
       id: "6j",
@@ -759,7 +777,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "drift-up",
     },
     {
       id: "7a",
@@ -769,7 +787,7 @@ export const video003: ExplainerProps = {
       transition_in: "fade_black",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "pan-right",
     },
     {
       id: "7b",
@@ -779,7 +797,8 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "cut",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "zoom-in",
+      transform: { scale: 1.14 },
     },
     {
       id: "7c",
@@ -789,7 +808,7 @@ export const video003: ExplainerProps = {
       transition_in: "cut",
       transition_out: "fade_black",
       transition_duration: 0.5,
-      animation: "ken-burns",
+      animation: "drift-up",
     },
   ],
   overlays: [

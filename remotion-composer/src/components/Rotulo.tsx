@@ -13,11 +13,15 @@ const { fontFamily: montserrat } = loadMontserrat("normal", {
   subsets: ["latin"],
 });
 
-// Artilugio brand palette (ARTILUGIO - Manual de identidad visual (maestro) §4)
-const ACERO_HIERRO = "#2D3238"; // lower-third backing
+// Artilugio brand palette (ARTILUGIO - Manual de identidad visual (maestro)
+// v2.4, §4) — alineada con ListReveal.tsx/MonumentalTitle.tsx: panel en
+// Azul Técnico con acento Bronce Forjado (no la barra Acero Hierro/Azul
+// Técnico de la version anterior de este componente), y Cobre Cálido como
+// segundo acento cálido (brillo/subtexto), igual que en esos dos.
+const AZUL_TECNICO = "#1D2A3A"; // panel background (ListReveal)
 const BLANCO_ACERO = "#E2E8F0"; // default rótulo text
-const BRONCE_FORJADO = "#C87A38"; // CTA text + accent bar (manual §10.1)
-const AZUL_TECNICO = "#1D2A3A"; // schematic-overlay accent (manual §10, §4)
+const BRONCE_FORJADO = "#C87A38"; // accent border + CTA text (ListReveal/MonumentalTitle)
+const COBRE_CALIDO = "#D49A46"; // subtext / glow accent (MonumentalTitle subtitle, ListReveal highlight)
 
 export interface RotuloProps {
   text: string;
@@ -97,10 +101,11 @@ export const Rotulo: React.FC<RotuloProps> = ({
           ...(isCta
             ? {}
             : {
-                background: `${ACERO_HIERRO}D9`, // ~85% opacity
-                borderLeft: `4px solid ${AZUL_TECNICO}`,
-                borderRadius: 4,
+                background: `${AZUL_TECNICO}D9`, // ~85% opacity, matches ListReveal's panel
+                borderLeft: `4px solid ${BRONCE_FORJADO}`,
+                borderRadius: 6,
                 padding: "16px 28px",
+                boxShadow: "0 10px 28px rgba(0,0,0,0.45)",
               }),
         }}
       >
@@ -119,7 +124,12 @@ export const Rotulo: React.FC<RotuloProps> = ({
               letterSpacing: isCta ? "0.08em" : "0.01em",
               textTransform: isCta ? "uppercase" : "none",
               color: isCta ? BRONCE_FORJADO : BLANCO_ACERO,
-              textShadow: "0 2px 10px rgba(0,0,0,0.7)",
+              // CTA has no background panel (unlike "label") — needs the
+              // same multi-layer glow MonumentalTitle uses for legibility
+              // on its own bare text, instead of a flat drop shadow.
+              textShadow: isCta
+                ? `0 0 4px rgba(14,14,17,0.85), 0 0 14px rgba(14,14,17,0.55), 0 0 26px ${COBRE_CALIDO}99`
+                : "0 2px 10px rgba(0,0,0,0.7)",
               lineHeight: 1.25,
             }}
           >
@@ -132,7 +142,9 @@ export const Rotulo: React.FC<RotuloProps> = ({
                 fontWeight: 500,
                 fontSize: subtextSize,
                 marginTop: 4,
-                color: isCta ? BRONCE_FORJADO : "#9CA8B4",
+                // Cobre Cálido — mismo color que usa MonumentalTitle para su
+                // propio subtítulo secundario.
+                color: COBRE_CALIDO,
                 textShadow: "0 2px 8px rgba(0,0,0,0.6)",
               }}
             >
