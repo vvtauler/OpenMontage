@@ -769,7 +769,7 @@ export const video003: ExplainerProps = {
     },
     {
       id: "7a",
-      source: "video003/images/6j.png",
+      source: "video003/images/7b.png",
       in_seconds: 663.36,
       out_seconds: 684.88,
       transition_in: "fade_black",
