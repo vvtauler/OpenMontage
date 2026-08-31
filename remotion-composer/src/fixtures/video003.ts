@@ -844,7 +844,7 @@ export const video003: ExplainerProps = {
     },
     {
       type: "photo_insert",
-      in_seconds: 231.72,
+      in_seconds: 232.72, // 1s de retraso respecto al inicio del plano (231.72)
       out_seconds: 247.08,
       source: "video003/images/researchers/fleet.jpg",
       caption: "John Faithfull Fleet",
