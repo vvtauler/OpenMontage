@@ -24,6 +24,12 @@ import {
 import { artilugioLargoTemplate } from "./fixtures/templates/artilugioLargoTemplate";
 import { artilugioShortTemplate } from "./fixtures/templates/artilugioShortTemplate";
 import { video003 } from "./fixtures/video003";
+import {
+  short1HookFixture as video003Short1,
+  short2MecanismoFixture as video003Short2,
+  short3ClimaxFixture as video003Short3,
+  short4RevelacionFixture as video003Short4,
+} from "./fixtures/video003-shorts";
 
 // ---------------------------------------------------------------------------
 // Theme System — prevents every video from looking like dark fintech
@@ -373,6 +379,53 @@ export const Root: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={artilugioShortTemplate}
+        calculateMetadata={calculateMetadata}
+      />
+      {/* Preview de los 4 shorts del video 003 (sistema v2, ver
+          10-Redes Sociales/003 - Shorts de la columna de hierro de Delhi.md
+          y skills/meta/social-shorts-strategy.md). Primer corte para
+          revisar en Remotion Studio — pendiente de aprobación de Víctor
+          antes de renderizar. Quitar estas 4 composiciones una vez
+          aprobadas y publicadas, igual que se hizo con los preview de
+          video001/002. */}
+      <Composition
+        id="Artilugio-short-003-1-hook"
+        component={Explainer}
+        durationInFrames={Math.ceil(35.108563 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video003Short1}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-003-2-mecanismo"
+        component={Explainer}
+        durationInFrames={Math.ceil(39.653875 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video003Short2}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-003-3-climax"
+        component={Explainer}
+        durationInFrames={Math.ceil(31.8955 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video003Short3}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-003-4-revelacion"
+        component={Explainer}
+        durationInFrames={Math.ceil(42.057125 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video003Short4}
         calculateMetadata={calculateMetadata}
       />
       <Composition
