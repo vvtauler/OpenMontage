@@ -98,8 +98,17 @@ volumedetect` (`max_volume` line) and set the fixture's `volume` /
 — same math those scripts' `peak_normalize()` does, just applied as a
 Remotion playback gain instead of baking a new file. A quiet ambience
 bed (as opposed to a punchy one-off cue) can compute an unusually large
-multiplier to reach -15dBFS — that's not necessarily wrong, but it's
-worth an ear-check in Studio rather than trusting the number blindly.
+multiplier to reach -15dBFS — don't assume that's an overcorrection (or
+trust it blindly) from the formula alone. Check it against the
+long-form video's own already-published mix: measure the peak of the
+exact time window where that same cue plays in `sfx-final.mp3` (`ffmpeg
+-t <duration> -af volumedetect`, i.e. only the first N seconds) and
+compare it to that file's own overall peak. If the two are close, the
+cue is genuinely meant to sit near the top of the mix in context (video
+003's `01-courtyard-birds.mp3`: raw peak -44.8dBFS → computed x30.9
+gain looked excessive, but the same cue's window in the real mix
+(0-5.56s of `sfx-final.mp3`) measures -15.1dBFS against a -13.2dBFS
+mix-wide peak — confirming the gain, not an error).
 
 ### 4. Hook rules (0-3s)
 

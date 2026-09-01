@@ -45,11 +45,17 @@ import { ExplainerProps } from "../Explainer";
 // de esos scripts (medir pico real con `ffmpeg -af volumedetect`, aplicar
 // la ganancia lineal 10^((target-pico)/20) como `volume`), aplicado aquí
 // sobre cada fichero de origen de cada short en vez de sobre el máster ya
-// mezclado. Aviso: el pico medido de short1-sfx-courtyard.mp3 es -44,8dBFS
-// (una ambientación muy silenciosa de base), así que su volumen calculado
-// es x30,9 — mecánicamente correcto para llegar a -15dBFS, pero al ser un
-// fondo continuo (no un cue puntual como el resto de sfx) conviene que
-// Víctor lo confirme de oído en Studio antes de dar el mezclado por bueno.
+// mezclado. Verificado el caso más dudoso, short1-sfx-courtyard.mp3: el
+// fichero crudo mide -44,8dBFS de pico (ambientación muy silenciosa de
+// base), así que su ganancia calculada hasta -15dBFS es x30,9 — a primera
+// vista excesivo para un fondo continuo. Contrastado contra el propio
+// vídeo largo (no solo contra la fórmula): en public/video003/audio/
+// sfx-final.mp3, exactamente el tramo 0.00-5.56s donde suena este mismo
+// cue (plano 1a) mide -15,1dBFS de pico — prácticamente el mismo pico que
+// el de la mezcla de sfx completa (-13,2dBFS) — así que en el vídeo ya
+// publicado ese momento de patio NO suena especialmente más flojo que el
+// resto del sfx. La ganancia x30,9 sí reproduce ese mismo nivel real, no
+// es una sobrecorrección de la fórmula.
 
 const THEME = {
   captionHighlightColor: "#D49A46", // Cobre Cálido
