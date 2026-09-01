@@ -81,7 +81,16 @@ const CtaText: React.FC<{ text: string }> = ({ text }) => {
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+    // marginTop: separación pedida por Víctor (1 sept 2026) respecto al
+    // wordmark ARTILUGIO de encima — antes quedaban demasiado pegados.
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        marginTop: 56,
+      }}
+    >
       {lines.map((line, i) => (
         <div
           key={i}

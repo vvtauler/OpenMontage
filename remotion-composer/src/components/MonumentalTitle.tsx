@@ -7,7 +7,7 @@ import {
 } from "remotion";
 import { loadFont as loadCinzel } from "@remotion/google-fonts/Cinzel";
 import { loadFont as loadMontserrat } from "@remotion/google-fonts/Montserrat";
-import { useFittedFontSize } from "../lib/textFit";
+import { useFittedFontSize, measureTextWidth } from "../lib/textFit";
 
 const { fontFamily: cinzel } = loadCinzel("normal", { weights: ["700"] });
 const { fontFamily: montserrat } = loadMontserrat("normal", {
@@ -36,7 +36,14 @@ const SCRIM_PADDING_X = 64;
 export interface MonumentalTitleProps {
   /** Character or object name — set in Cinzel, uppercase, monumental
    * (manual §5). For introducing a person or a hero object shown large in
-   * the background image, not for section titles (see SectionTitle). */
+   * the background image, not for section titles (see SectionTitle).
+   * Optional "\n" breaks it into 2-3 stacked lines instead of one —
+   * pedido explícito de Víctor para el rótulo de gancho de los shorts
+   * (1 sept 2026): partido en varias líneas, cada línea es más corta que
+   * el texto completo, así que el ajuste automático de tamaño le saca un
+   * fontSize mayor por línea — más protagonismo que forzarlo todo en una
+   * sola línea encogida para caber en el 90% de ancho. Sin "\n" se
+   * comporta exactamente igual que antes (una sola línea). */
   title: string;
   /** Optional descriptor below the name — dates, role, etc. — in the
    * channel's technical sans-serif, per the manual's typographic contrast
@@ -68,11 +75,26 @@ export const MonumentalTitle: React.FC<MonumentalTitleProps> = ({
   // tiempo, como pasaba con "Gengis Kan" sobre el corte 1b.
   const BOTTOM_PADDING_RATIO = 0.27;
 
+  // "\n" parte el título en varias líneas — cada línea se mide y se ajusta
+  // por separado (ver doc del prop `title`). Sin "\n", titleLines tiene un
+  // único elemento y el comportamiento es idéntico al de antes.
+  const titleLines = title
+    .toUpperCase()
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const widestTitleLine = titleLines.reduce(
+    (widest, line) =>
+      measureTextWidth(line, 700, cinzel) > measureTextWidth(widest, 700, cinzel)
+        ? line
+        : widest,
+    titleLines[0] ?? ""
+  );
   const titleFontSize = useFittedFontSize(
-    // El título se pinta en mayúsculas (textTransform: uppercase) — hay que
-    // medir esa misma versión, no el "title" tal cual llega, o el ancho
-    // real desborda el ratio calculado (mayúsculas son más anchas).
-    title.toUpperCase(),
+    // Medir solo la línea más ancha (no el texto completo): con varias
+    // líneas cortas, cada una individualmente puede ocupar más del ancho
+    // objetivo que si se midiera el título entero de un tirón.
+    widestTitleLine,
     cinzel,
     700,
     width * widthRatio - 2 * SCRIM_PADDING_X,
@@ -149,13 +171,22 @@ export const MonumentalTitle: React.FC<MonumentalTitleProps> = ({
             color: BLANCO_ACERO,
             lineHeight: 1.15,
             textShadow: glow,
-            // Sin esto, un título de dos o más palabras (p. ej. "Gengis
-            // Kan") puede saltar de línea en el hueco si el fit no es
-            // pixel-perfect — el ancho está pensado para una sola línea.
-            whiteSpace: "nowrap",
           }}
         >
-          {title}
+          {titleLines.map((line, i) => (
+            <div
+              key={i}
+              style={{
+                // Cada línea no salta por su cuenta — el fit ya se calculó
+                // contra la línea más ancha de las que haya, así que un
+                // salto dentro de una línea solo pasaría por un
+                // redondeo/medida imprecisa, no porque falte espacio real.
+                whiteSpace: "nowrap",
+              }}
+            >
+              {line}
+            </div>
+          ))}
         </div>
 
         <div

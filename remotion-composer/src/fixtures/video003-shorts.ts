@@ -121,7 +121,7 @@ export const short1HookFixture: ExplainerProps = {
       type: "cta_card",
       in_seconds: 28.26,
       out_seconds: 35.108563,
-      text: "SÍGUEME — PARTE 2",
+      text: "SÍGUENOS PARA PARTE 2",
       // Sin audioSrc: la locución (audio.narration) sigue sonando bajo la
       // tarjeta — ya incluye "Cuéntamelo en comentarios y sígueme..." y la
       // pregunta-gancho hacia el short 2.
@@ -133,7 +133,7 @@ export const short1HookFixture: ExplainerProps = {
       in_seconds: 0,
       out_seconds: 3.0,
       position: "center",
-      text: "LLEVA 1.600 AÑOS OXIDÁNDOSE",
+      text: "LLEVA\n1.600 AÑOS\nOXIDÁNDOSE",
     },
     {
       type: "rotulo",
@@ -335,7 +335,7 @@ export const short2MecanismoFixture: ExplainerProps = {
       type: "cta_card",
       in_seconds: 32.66,
       out_seconds: 39.653875,
-      text: "SÍGUEME — PARTE 3",
+      text: "SÍGUENOS PARA PARTE 3",
     },
   ],
   overlays: [
@@ -344,7 +344,7 @@ export const short2MecanismoFixture: ExplainerProps = {
       in_seconds: 0,
       out_seconds: 3.0,
       position: "center",
-      text: "6 TONELADAS SIN FUNDIR NI UN GRAMO",
+      text: "6 TONELADAS\nSIN FUNDIR\nNI UN GRAMO",
     },
     {
       type: "rotulo",
@@ -560,7 +560,7 @@ export const short3ClimaxFixture: ExplainerProps = {
       type: "cta_card",
       in_seconds: 26.06,
       out_seconds: 31.8955,
-      text: "SÍGUEME — PARTE 4",
+      text: "SÍGUENOS PARA PARTE 4",
     },
   ],
   overlays: [
@@ -569,7 +569,7 @@ export const short3ClimaxFixture: ExplainerProps = {
       in_seconds: 0,
       out_seconds: 3.0,
       position: "center",
-      text: "SOBREVIVIÓ A UN CAÑONAZO",
+      text: "SOBREVIVIÓ\nA UN CAÑONAZO",
     },
     {
       type: "rotulo",
@@ -796,7 +796,7 @@ export const short4RevelacionFixture: ExplainerProps = {
       type: "cta_card",
       in_seconds: 33.98,
       out_seconds: 42.057125,
-      text: "SÍGUEME EN ARTILUGIO",
+      text: "SÍGUENOS EN ARTILUGIO",
     },
   ],
   overlays: [
@@ -805,7 +805,7 @@ export const short4RevelacionFixture: ExplainerProps = {
       in_seconds: 0,
       out_seconds: 3.0,
       position: "center",
-      text: "SU DEFECTO ES SU ARMADURA",
+      text: "SU DEFECTO\nES SU ARMADURA",
     },
     {
       type: "rotulo",
