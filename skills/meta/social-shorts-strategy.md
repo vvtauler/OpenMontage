@@ -88,6 +88,19 @@ current `trimStartSeconds`/`trimEndSeconds` window into one `videoSrc`
 only fits the old single-master-trim approach and needs to become one
 case of a more general multi-cut foreground, not the only case.
 
+**Levels (video 003):** match the long-form video's own peak-dBFS
+targets, not an arbitrary guess — narration -1.0dBFS, music -25.0dBFS,
+sfx -15.0dBFS (same targets `_rebuild_narration_v2.py`,
+`_rebuild_music_v2.py`, `_mix_sfx_track.py` use in the long-form
+project folder). Measure each short's raw source file with `ffmpeg -af
+volumedetect` (`max_volume` line) and set the fixture's `volume` /
+`audioVolume` to the linear gain `10 ** ((target - measured_peak) / 20)`
+— same math those scripts' `peak_normalize()` does, just applied as a
+Remotion playback gain instead of baking a new file. A quiet ambience
+bed (as opposed to a punchy one-off cue) can compute an unusually large
+multiplier to reach -15dBFS — that's not necessarily wrong, but it's
+worth an ear-check in Studio rather than trusting the number blindly.
+
 ### 4. Hook rules (0-3s)
 
 - On-screen hook text: short, uppercase, a counterintuitive claim or
