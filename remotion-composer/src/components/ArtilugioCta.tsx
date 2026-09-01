@@ -29,6 +29,13 @@ export const CTA_DURATION_SECONDS = 2.5;
 
 const ARTILUGIO_MARK = "ARTILUGIO";
 const ARTILUGIO_LETTER_SPACING_EM = 0.22;
+const ARTILUGIO_ISOTIPE_SRC = "social-clips/source/logo-isotipo-full.png";
+// Momento de marca del cierre: isotipo completo (no el watermark sutil de
+// esquina) centrado justo encima del wordmark — decisión de Víctor (1 sept
+// 2026) para asociar la marca a la imagen en el instante del CTA. Distinto
+// tratamiento del Watermark persistente (20% opacidad, esquina): aquí va a
+// opacidad plena, como parte de la propia tarjeta.
+const ARTILUGIO_ISOTIPE_WIDTH_RATIO = 0.26;
 
 /** Wordmark "ARTILUGIO", elemento independiente, justo debajo del isotipo. */
 const ArtilugioMark: React.FC = () => {
@@ -98,7 +105,7 @@ const CtaText: React.FC<{ text: string }> = ({ text }) => {
 
 export const CtaCard: React.FC<{ text?: string }> = ({ text = DEFAULT_CTA_TEXT }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, width } = useVideoConfig();
   const opacity = interpolate(frame, [0, Math.round(0.4 * fps)], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -106,16 +113,28 @@ export const CtaCard: React.FC<{ text?: string }> = ({ text = DEFAULT_CTA_TEXT }
 
   return (
     <AbsoluteFill style={{ zIndex: 4 }}>
-      {/* ARTILUGIO — justo debajo del isotipo, posición fija */}
+      {/* Isotipo completo + ARTILUGIO — lockup de marca centrado, el icono
+          justo encima del wordmark. El wordmark se queda anclado en la
+          misma zona segura de siempre (justo por debajo de donde caía
+          top:460 antes de añadir el icono); el icono ocupa el hueco por
+          encima. */}
       <div
         style={{
           opacity,
           position: "absolute",
-          top: 460, // justo debajo del isotipo (misma zona segura que los subtítulos)
+          top: 460,
           left: "50%",
           transform: "translateX(-50%)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 24,
         }}
       >
+        <CanvasImage
+          src={resolveAsset(ARTILUGIO_ISOTIPE_SRC)}
+          style={{ width: width * ARTILUGIO_ISOTIPE_WIDTH_RATIO, height: "auto" }}
+        />
         <ArtilugioMark />
       </div>
       {/* CTA — elemento independiente, centrado en toda la pantalla */}

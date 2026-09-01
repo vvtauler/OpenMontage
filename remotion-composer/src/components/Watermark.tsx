@@ -17,16 +17,27 @@ import { resolveAsset } from "../lib/resolveAsset";
 // SAFE_MARGIN_BOTTOM/SAFE_MARGIN_SIDE de SocialClip.tsx, opacidad 0.2.
 const CANVAS_WIDTH = 1080;
 const WATERMARK_WIDTH = CANVAS_WIDTH * 0.11; // ~119px, tamaño base — marca sutil, no protagonista
-const SAFE_MARGIN_BOTTOM = 320; // mismo valor que SocialClip.tsx — evita el caption/UI nativo de la plataforma
-const SAFE_MARGIN_SIDE = 64; // mismo valor que SocialClip.tsx
+const SAFE_MARGIN_BOTTOM = 320; // mismo valor que SocialClip.tsx — punto de partida genérico
+const SAFE_MARGIN_SIDE = 64; // mismo valor que SocialClip.tsx — punto de partida genérico
+
+// Posición definitiva (ajustada a mano por Víctor en Remotion Studio, 1
+// sept 2026): un poco más abajo y más a la izquierda que el margen
+// genérico de arriba, para no quedar tapada por los iconos nativos de
+// comentar/compartir/seguir que Instagram Reels y TikTok superponen en su
+// propia esquina inferior derecha (esos iconos invaden más el margen
+// "seguro" genérico de lo que SAFE_MARGIN_BOTTOM/SIDE por sí solos
+// cubren). Sigue siendo la misma marca sutil (11% del ancho, 20%
+// opacidad) — solo cambia dónde se ancla dentro de esa esquina.
+const WATERMARK_BOTTOM = SAFE_MARGIN_BOTTOM - 122; // 320 - 122 = 198
+const WATERMARK_RIGHT = SAFE_MARGIN_SIDE + 90; // 64 + 90 = 154
 
 export const Watermark: React.FC<{ src: string }> = ({ src }) => (
   <CanvasImage
     src={resolveAsset(src)}
     style={{
       position: "absolute",
-      bottom: SAFE_MARGIN_BOTTOM,
-      right: SAFE_MARGIN_SIDE,
+      bottom: WATERMARK_BOTTOM,
+      right: WATERMARK_RIGHT,
       width: WATERMARK_WIDTH,
       height: "auto",
       opacity: 0.2,
