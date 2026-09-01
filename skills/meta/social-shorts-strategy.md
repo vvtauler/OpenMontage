@@ -100,6 +100,25 @@ case of a more general multi-cut foreground, not the only case.
   `SocialClip.tsx`) so a 9:16 center-crop never clips it. This is a
   constraint on the long-form video's own `visual` stage, not just on
   the short — flag it to whoever is directing that stage.
+- **Prefer 2-3 short lines over one long one** (video 003, Víctor).
+  `MonumentalTitle.tsx`'s hook overlay auto-shrinks a single-line title
+  to fit 90% of frame width — a long hook phrase forced onto one line
+  ends up smaller, not more attention-grabbing. Passing `"\n"` in the
+  `title` prop stacks it into 2-3 lines instead, and the component fits
+  the font size against the *widest individual line* rather than the
+  whole string, so it renders noticeably bigger. E.g. `"LLEVA\n1.600
+  AÑOS\nOXIDÁNDOSE"` instead of `"LLEVA 1.600 AÑOS OXIDÁNDOSE"`. No
+  `"\n"` keeps the old single-line behavior (other `MonumentalTitle`
+  uses, e.g. the long-form "Gengis Kan" callout, are unaffected).
+  Break lines at natural clause/phrase boundaries, not just to balance
+  line length.
+- **Dark halo around the letters** (`MonumentalTitle.tsx`'s `glow`
+  `textShadow`, not the background scrim): as of video 003 it's 3 dark
+  layers (`10px@0.95`, `26px@0.85`, `48px@0.65`) plus the warm brand
+  glow layers, deliberately darker/wider than the original 2-layer
+  version so the title reads clearly over busy or pale backgrounds
+  (pale sky was the case that showed the old halo was too thin). Don't
+  thin this back out without checking against a pale-background plano.
 
 ### 5. Frame and crop
 
@@ -113,6 +132,21 @@ Bottom-right corner, subtle (~20% opacity, per `ARTILUGIO - Manual de
 identidad visual (maestro)` §10), visible through the whole clip
 including the CTA card. Not a large centered top badge — that was a
 video-001 execution deviation, never the spec.
+
+**Enforced in code as of video 003** (`Watermark.tsx`, shared by both
+`Explainer` and `SocialClip` shorts) — check this file hasn't drifted
+again before assuming the spec above is what actually renders; it has
+regressed once already (see Common pitfalls). Current values:
+`WATERMARK_WIDTH = CANVAS_WIDTH * 0.11` (~119px, base size — do not
+reapply the old `x1.23x2` "manual adjustment" that inflated it to
+~27%), `opacity: 0.2`. Position is **not** the generic
+`SAFE_MARGIN_BOTTOM`/`SAFE_MARGIN_SIDE` (320/64) that `SocialClip.tsx`
+uses elsewhere — Instagram Reels/TikTok's own comment/share/follow
+icons eat further into that corner than those generic margins account
+for, so the watermark needs its own, larger offset:
+`WATERMARK_BOTTOM = 198`, `WATERMARK_RIGHT = 154` (both measured by eye
+in Remotion Studio against the actual platform chrome, not derived
+from a formula — if the native UI changes, re-measure, don't guess).
 
 ### 7. Duration
 
@@ -128,6 +162,20 @@ inside the existing brand type system (Cinzel for the wordmark,
 Montserrat for CTA/body) instead of introducing an unrelated face like
 Bebas Neue.
 
+**Enforced in code as of video 003.** `CaptionOverlay.tsx`'s own
+default is still Space Grotesk/700 (untouched, other Explainer-based
+projects in this repo rely on it) — for an Artilugio short, request the
+brand font explicitly on the fixture's `themeConfig`:
+`captionFontFamily: "Montserrat"`, `captionFontWeight: 800`. Before
+video 003 `Explainer.tsx` never forwarded `fontFamily`/`fontWeight` to
+`CaptionOverlay` at all, so this had **no effect even when set** — that
+wiring now exists (`Explainer.tsx` → `theme.captionFontFamily` /
+`theme.captionFontWeight` → `CaptionOverlay`'s `fontFamily`/`fontWeight`
+props), and Montserrat weight 800 is loaded in `CaptionOverlay.tsx`
+itself so it's actually available, not just named. If a future short's
+captions render in Space Grotesk, check the fixture's `themeConfig`
+first before assuming the engine is broken again.
+
 ### 9. CTA (~28-30s mark)
 
 Native engagement close (ask a question, invite comments, "sigue para
@@ -139,6 +187,52 @@ Revisit once TikTok's bio-link feature is enabled for the account.
 When that happens, log it as a new `decision_log` entry reusing this
 same category/subject rather than silently swapping the copy (see
 AGENT_GUIDE.md → "Re-log Changed Decisions").
+
+**Copy convention (video 003, Víctor):** "Síguenos" (plural), not
+"Sígueme" — the channel voice, not one person. Spell out "para"
+instead of an em-dash separator: `"SÍGUENOS PARA PARTE 2"`, not
+`"SÍGUEME — PARTE 2"`. On the miniserie's last short, the generic
+catalog reference uses the brand name per CLAUDE.md §35:
+`"SÍGUENOS EN ARTILUGIO"`.
+
+**Brand lockup on the cta_card** (`ArtilugioCta.tsx`, video 003): the
+full isotipo (`social-clips/source/logo-isotipo-full.png`, the same
+asset as the corner `Watermark`, but at full opacity — not the
+watermark's 20%) sits centered directly above the "ARTILUGIO" wordmark,
+`gap: 24`. Width is computed in pixels via `useVideoConfig().width *
+0.26` — a CSS `%` width doesn't work here because the wordmark's own
+wrapper is an absolutely-positioned, auto-sized flex column (no
+explicit width for a percentage to resolve against). There's also a
+`marginTop: 56` between the wordmark and the CTA text line below it —
+they read as one cramped block without it.
+
+### 10. Mid-short data rótulos (`Rotulo.tsx`, `bottom-*` positions)
+
+The `rotulo` overlay type (data-card callouts like "50 MICRAS" or
+"1739", distinct from the Hook's `monumental_title`) was built for the
+16:9 long-form frame, where a flat 90px bottom margin is fine. In a
+1080x1920 short that same 90px lands the rótulo inside the same band
+`CaptionOverlay` reserves for subtitles — and, if the plano behind it
+is a reused motion graphic at `videoFit:"contain"`, potentially inside
+the graphic's own letterboxed content too.
+
+`Rotulo.tsx` is vertical-aware as of video 003 (`isVertical = height >
+width`, same pattern as `CaptionOverlay.tsx`): `bottom-*` positions use
+`VERTICAL_SAFE_MARGIN_BOTTOM_RATIO = 540/1920` (~540px) instead of the
+generic 90px. **Mind the direction** if this ever needs re-tuning:
+raising the ratio pushes the rótulo *up* (further from the frame's
+bottom edge) — if it's already colliding with a motion graphic above
+it, raising the margin drives it further into the graphic, not away
+from it; if it's colliding with the caption below it, raising the
+margin is what clears that. 540px was measured directly in Studio
+against the worst case that matters for both directions at once: a
+16:9 motion graphic at `videoFit:"contain"` (bottom edge ~656px above
+the frame's bottom on a 1280x720 clip) with a genuine 2-line caption
+active underneath the rótulo. Re-measure by eye in Studio if either
+constraint changes (a differently-shaped motion graphic, a caption
+font-size change) rather than guessing a new ratio from formulas alone
+— see Common pitfalls below for why the formula-only approach failed
+twice here.
 
 ## Common pitfalls
 
@@ -155,3 +249,23 @@ AGENT_GUIDE.md → "Re-log Changed Decisions").
   `edit_decisions` (the `documentary-montage` pipeline's default
   `social_short` handling) — that only works for a straight
   same-timeline crop, which is no longer this project's approach.
+- **Shared-component regressions from merging in `main`'s engine
+  work.** `Watermark.tsx` reverted to the exact video-001 defect (large,
+  centered, opaque) via a "reconcile main's engine work" merge, months
+  after this doc says it was fixed — the fix lives in code shared with
+  other projects in this repo, so it can silently drift back. Don't
+  trust this doc's prose alone; check the actual component before
+  assuming the spec is what renders (§6, §8, §10 above all note what to
+  check).
+- **Fixing a margin/position purely from a formula, without a visual
+  check in Studio.** The rótulo bottom-margin fix (§10) needed two
+  follow-up rounds after the first formula-derived value (a generic
+  ratio of frame height) turned out right for the caption but wrong for
+  a motion graphic behind it, then a second attempt overcorrected in
+  the wrong direction entirely. The value that actually worked came
+  from measuring the real conflict in Studio, not from computing it in
+  the abstract.
+- Forcing a hook title onto one line "because it's a title" when it's
+  long enough to shrink below where it's easy to read at a glance — see
+  §4's multi-line note; more lines at a bigger size beats one line
+  auto-shrunk to fit.
