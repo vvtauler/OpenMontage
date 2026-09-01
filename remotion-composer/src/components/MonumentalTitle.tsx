@@ -124,11 +124,15 @@ export const MonumentalTitle: React.FC<MonumentalTitleProps> = ({
 
   // Non-directional (0,0-offset) blur layers instead of an offset drop
   // shadow — a soft radiant halo around the letterforms rather than a cast
-  // shadow in one direction. Tight dark layer for edge contrast/legibility
+  // shadow in one direction. Dark layers for edge contrast/legibility
   // against any background, wider warm layers for the "resplandor" glow.
+  // Halo oscuro ensanchado y oscurecido (pedido de Víctor, 1 sept 2026)
+  // para que el título resalte más sobre fondos claros/ruidosos — antes se
+  // quedaba corto de alcance (18px) y no bajaba de 0.55 de opacidad.
   const glow = [
-    "0 0 6px rgba(14,14,17,0.85)",
-    "0 0 18px rgba(14,14,17,0.55)",
+    "0 0 10px rgba(14,14,17,0.95)",
+    "0 0 26px rgba(14,14,17,0.85)",
+    "0 0 48px rgba(14,14,17,0.65)",
     `0 0 34px ${COBRE_CALIDO}99`,
     `0 0 70px ${BRONCE_FORJADO}66`,
   ].join(", ");
