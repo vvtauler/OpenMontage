@@ -43,6 +43,12 @@ export interface RotuloProps {
 // Title-safe margins (~5% each side on a 1920x1080 frame).
 const SAFE_MARGIN_X = 100;
 const SAFE_MARGIN_Y = 90;
+// En vertical (shorts), un rótulo "bottom-*"/90px caía dentro de la misma
+// franja que reservan los subtítulos (CaptionOverlay: ~320/1920 + su caja) y
+// que además tapan los overlays nativos de la plataforma (descripción/
+// usuario/iconos de Reels y TikTok) — Víctor, 1 sept 2026: subir el rótulo
+// por encima de esa franja entera, no solo del margen genérico de captions.
+const VERTICAL_SAFE_MARGIN_BOTTOM_RATIO = 0.25; // ~480px de 1920
 const FADE_SECONDS = 0.4;
 // CTA's fade-out is timed to land in sync with the background image's own
 // fade-to-black (Explainer.tsx's end-black cut crossfades over 0.5s) -
@@ -62,7 +68,8 @@ export const Rotulo: React.FC<RotuloProps> = ({
   sceneDurationSeconds,
 }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, width, height } = useVideoConfig();
+  const isVertical = height > width;
   const durationInFrames = Math.round(sceneDurationSeconds * fps);
   const fadeFrames = Math.round(FADE_SECONDS * fps);
   const fadeOutFrames = Math.round(
@@ -110,12 +117,19 @@ export const Rotulo: React.FC<RotuloProps> = ({
   const textSize = isCta ? 66 : 38;
   const subtextSize = isCta ? 30 : 24;
 
+  // Solo las posiciones "bottom-*" quedan dentro de la franja de
+  // subtítulos/UI nativa de la plataforma — "top-left" y "center" no la
+  // tocan y se quedan con el margen genérico de siempre.
+  const isBottom = !isTop && !isCenter;
+  const bottomMarginY =
+    isBottom && isVertical ? Math.round(height * VERTICAL_SAFE_MARGIN_BOTTOM_RATIO) : SAFE_MARGIN_Y;
+
   return (
     <AbsoluteFill
       style={{
         justifyContent: isCenter ? "center" : isTop ? "flex-start" : "flex-end",
         alignItems: alignH,
-        padding: `${SAFE_MARGIN_Y}px ${SAFE_MARGIN_X}px`,
+        padding: `${SAFE_MARGIN_Y}px ${SAFE_MARGIN_X}px ${bottomMarginY}px`,
         pointerEvents: "none",
       }}
     >
