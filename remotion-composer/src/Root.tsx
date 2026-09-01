@@ -54,6 +54,17 @@ export interface ThemeConfig {
    * default (16:9 long-form). Vertical shorts pass a larger size (e.g. 54,
    * matching SocialClip's brand captions) via themeConfig. */
   captionFontSize?: number;
+  /** Optional per-video override — undefined keeps CaptionOverlay's own
+   * default (Space Grotesk). Artilugio shorts pass "Montserrat" via
+   * themeConfig to match the brand type system (manual de identidad visual
+   * §8 / social-shorts-strategy.md §8: Cinzel for the wordmark, Montserrat
+   * for CTA/body/captions) — the font itself still needs to be loaded
+   * where it's used (see CaptionOverlay.tsx). */
+  captionFontFamily?: string;
+  /** Optional per-video override — undefined keeps CaptionOverlay's own
+   * default (700). Pairs with captionFontFamily: "Montserrat" for the
+   * ExtraBold (800) weight the brand spec asks for. */
+  captionFontWeight?: number;
 }
 
 export const THEMES: Record<string, ThemeConfig> = {

@@ -6,6 +6,15 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+import { loadFont as loadMontserrat } from "@remotion/google-fonts/Montserrat";
+
+// Registra el peso 800 (ExtraBold) para que exista de verdad cuando algún
+// caller pida fontFamily="Montserrat" (p. ej. los shorts de Artilugio,
+// manual de identidad visual §8 / social-shorts-strategy.md §8). No cambia
+// el fontFamily por defecto de este componente (Space Grotesk) — otros
+// proyectos que usan CaptionOverlay sin pasar fontFamily no se ven
+// afectados, solo se añade la fuente como disponible.
+loadMontserrat("normal", { weights: ["800"] });
 
 // Word-level caption for TikTok-style highlight display
 export interface WordCaption {
@@ -23,6 +32,9 @@ type CaptionOverlayProps = {
   highlightColor?: string;
   backgroundColor?: string;
   fontFamily?: string;
+  /** Optional — undefined keeps this component's own default (700). Pass
+   * 800 for Montserrat ExtraBold (Artilugio shorts brand spec). */
+  fontWeight?: number;
   /** "bottom" (default) — safe-zone-aware bottom anchor, see below. "top" —
    * anchors under a letterboxed video (TalkingHead's clip-factory shorts),
    * clear of the lower_third overlay zone. */
@@ -68,6 +80,7 @@ const PageRenderer: React.FC<{
   highlightColor: string;
   backgroundColor: string;
   fontFamily: string;
+  fontWeight: number;
   position: "top" | "bottom";
   verticalOffsetPx: number;
 }> = ({
@@ -77,6 +90,7 @@ const PageRenderer: React.FC<{
   highlightColor,
   backgroundColor,
   fontFamily,
+  fontWeight,
   position,
   verticalOffsetPx,
 }) => {
@@ -125,7 +139,7 @@ const PageRenderer: React.FC<{
         <span
           style={{
             fontSize,
-            fontWeight: 700,
+            fontWeight,
             fontFamily,
             lineHeight: 1.4,
             whiteSpace: "pre-wrap",
@@ -163,6 +177,7 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
   highlightColor = "#22D3EE",
   backgroundColor = "rgba(15, 23, 42, 0.75)",
   fontFamily = "Space Grotesk, Inter, system-ui, sans-serif",
+  fontWeight = 700,
   position = "bottom",
   verticalOffsetPx = 0,
 }) => {
@@ -188,6 +203,7 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
               highlightColor={highlightColor}
               backgroundColor={backgroundColor}
               fontFamily={fontFamily}
+              fontWeight={fontWeight}
               position={position}
               verticalOffsetPx={verticalOffsetPx}
             />

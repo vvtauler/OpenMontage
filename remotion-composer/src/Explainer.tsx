@@ -1167,6 +1167,8 @@ export const Explainer: React.FC<ExplainerProps> = (props) => {
           fontSize={theme.captionFontSize ?? 42}
           highlightColor={theme.captionHighlightColor}
           backgroundColor={theme.captionBackgroundColor}
+          fontFamily={theme.captionFontFamily}
+          fontWeight={theme.captionFontWeight}
         />
       )}
 

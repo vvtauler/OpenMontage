@@ -42,6 +42,12 @@ const THEME = {
   captionHighlightColor: "#D49A46", // Cobre Cálido
   captionBackgroundColor: "rgba(14, 14, 17, 0.78)", // Acero/Hierro
   captionFontSize: 54,
+  // Manual de identidad visual §8 / social-shorts-strategy.md §8: Montserrat
+  // ExtraBold para subtítulos (Cinzel queda reservado al wordmark). Antes de
+  // esta corrección (1 sept 2026) Explainer.tsx no pasaba fontFamily/weight
+  // a CaptionOverlay, así que caía en su default (Space Grotesk, 700).
+  captionFontFamily: "Montserrat",
+  captionFontWeight: 800,
 } as const;
 
 const WATERMARK = "social-clips/source/logo-isotipo-full.png";
