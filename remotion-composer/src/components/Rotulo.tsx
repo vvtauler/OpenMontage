@@ -51,9 +51,22 @@ const SAFE_MARGIN_Y = 90;
 // 0.25 (~480px) se quedaba corto: cubría el caption de una línea, pero un
 // caption de 2 líneas (CaptionOverlay envuelve a 6 palabras/página, así que
 // palabras largas fácilmente ocupan 2 líneas) crece hacia arriba y lo
-// vuelve a tapar — Víctor, 1 sept 2026, tras verlo chocar en Studio. Subido
-// a 0.32 (~614px) para dejar hueco de sobra incluso con caption de 2 líneas.
-const VERTICAL_SAFE_MARGIN_BOTTOM_RATIO = 0.32; // ~614px de 1920
+// vuelve a tapar — Víctor, 1 sept 2026, tras verlo chocar en Studio.
+//
+// El siguiente ajuste (subir a 0.32/~614px) arregló el caption pero metió
+// el rótulo dentro del propio motion graphic (videoFit:"contain") cuando
+// hay uno de fondo — ojo con la dirección: subir el margen mueve el rótulo
+// hacia ARRIBA (más lejos del borde inferior), así que si ya estaba pegado
+// al motion graphic, subirlo más lo mete de lleno dentro, no lo saca.
+// plano-2d-temperatura-horno-vs-fusion.mp4 es 1280x720 (16:9) dentro del
+// lienzo 1080x1920 — a ancho completo (1080px) le corresponde una altura
+// de 607.5px, centrada verticalmente: su borde inferior real está a
+// (1920-607.5)/2 = 656.25px del borde inferior del lienzo, es decir, MÁS
+// arriba que el margen que hacía falta. Medido a ojo en Studio contra ese
+// caso exacto (Víctor, 1 sept 2026): 540px dejaba al rótulo pegado justo
+// debajo del motion graphic Y con hueco limpio sobre el caption de 2
+// líneas — el valor definitivo, no 656 ni 614.
+const VERTICAL_SAFE_MARGIN_BOTTOM_RATIO = 540 / 1920; // ~540px de 1920
 const FADE_SECONDS = 0.4;
 // CTA's fade-out is timed to land in sync with the background image's own
 // fade-to-black (Explainer.tsx's end-black cut crossfades over 0.5s) -
