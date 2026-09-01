@@ -48,7 +48,12 @@ const SAFE_MARGIN_Y = 90;
 // que además tapan los overlays nativos de la plataforma (descripción/
 // usuario/iconos de Reels y TikTok) — Víctor, 1 sept 2026: subir el rótulo
 // por encima de esa franja entera, no solo del margen genérico de captions.
-const VERTICAL_SAFE_MARGIN_BOTTOM_RATIO = 0.25; // ~480px de 1920
+// 0.25 (~480px) se quedaba corto: cubría el caption de una línea, pero un
+// caption de 2 líneas (CaptionOverlay envuelve a 6 palabras/página, así que
+// palabras largas fácilmente ocupan 2 líneas) crece hacia arriba y lo
+// vuelve a tapar — Víctor, 1 sept 2026, tras verlo chocar en Studio. Subido
+// a 0.32 (~614px) para dejar hueco de sobra incluso con caption de 2 líneas.
+const VERTICAL_SAFE_MARGIN_BOTTOM_RATIO = 0.32; // ~614px de 1920
 const FADE_SECONDS = 0.4;
 // CTA's fade-out is timed to land in sync with the background image's own
 // fade-to-black (Explainer.tsx's end-black cut crossfades over 0.5s) -
