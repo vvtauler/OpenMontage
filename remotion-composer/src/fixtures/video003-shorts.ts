@@ -37,6 +37,19 @@ import { ExplainerProps } from "../Explainer";
 // directa con la regla "cropMode center, sin barras" de
 // social-shorts-strategy.md §5. No se resuelve generando nada nuevo sin
 // autorización de Víctor (CLAUDE.md §33) — queda marcado para su revisión.
+//
+// Niveles de audio (1 sept 2026): nivelados a los mismos targets de pico
+// (dBFS) que usa el vídeo largo 003 en projects/003-columna-hierro-delhi/
+// _rebuild_narration_v2.py, _rebuild_music_v2.py, _mix_sfx_track.py —
+// narración -1.0dBFS, música -25.0dBFS, sfx -15.0dBFS. Método idéntico al
+// de esos scripts (medir pico real con `ffmpeg -af volumedetect`, aplicar
+// la ganancia lineal 10^((target-pico)/20) como `volume`), aplicado aquí
+// sobre cada fichero de origen de cada short en vez de sobre el máster ya
+// mezclado. Aviso: el pico medido de short1-sfx-courtyard.mp3 es -44,8dBFS
+// (una ambientación muy silenciosa de base), así que su volumen calculado
+// es x30,9 — mecánicamente correcto para llegar a -15dBFS, pero al ser un
+// fondo continuo (no un cue puntual como el resto de sfx) conviene que
+// Víctor lo confirme de oído en Studio antes de dar el mezclado por bueno.
 
 const THEME = {
   captionHighlightColor: "#D49A46", // Cobre Cálido
@@ -242,14 +255,14 @@ export const short1HookFixture: ExplainerProps = {
     { word: "metal?", startMs: 34320, endMs: 34540 },
   ],
   audio: {
-    narration: { src: "video003/shorts-audio/short1-narration.mp3", volume: 1.0 },
+    narration: { src: "video003/shorts-audio/short1-narration.mp3", volume: 1.6596 },
     music: {
       src: "video003/shorts-audio/short1-music.mp3",
-      volume: 0.35,
+      volume: 0.0562,
       fadeInSeconds: 0.5,
       fadeOutSeconds: 1.0,
     },
-    sfx: { src: "video003/shorts-audio/short1-sfx-courtyard.mp3", volume: 0.25 },
+    sfx: { src: "video003/shorts-audio/short1-sfx-courtyard.mp3", volume: 30.903 },
   },
 };
 
@@ -315,7 +328,7 @@ export const short2MecanismoFixture: ExplainerProps = {
       // Golpe de martillo, sincronizado con "las golpeaban... hasta
       // soldarlas" — independiente de audio.music/narration.
       audioSrc: "video003/shorts-audio/short2-sfx-hammer.mp3",
-      audioVolume: 0.6,
+      audioVolume: 0.1778,
       audioStartSeconds: 0.4,
     },
     {
@@ -475,14 +488,14 @@ export const short2MecanismoFixture: ExplainerProps = {
     { word: "metal?", startMs: 38860, endMs: 39120 },
   ],
   audio: {
-    narration: { src: "video003/shorts-audio/short2-narration.mp3", volume: 1.0 },
+    narration: { src: "video003/shorts-audio/short2-narration.mp3", volume: 1.6596 },
     music: {
       src: "video003/shorts-audio/short2-music.mp3",
-      volume: 0.35,
+      volume: 0.07,
       fadeInSeconds: 0.5,
       fadeOutSeconds: 1.0,
     },
-    sfx: { src: "video003/shorts-audio/short2-sfx-forge.mp3", volume: 0.22 },
+    sfx: { src: "video003/shorts-audio/short2-sfx-forge.mp3", volume: 0.1778 },
   },
 };
 
@@ -528,7 +541,7 @@ export const short3ClimaxFixture: ExplainerProps = {
       // Disparo lejano con eco, sincronizado con "una bala de cañón
       // golpeó el pilar".
       audioSrc: "video003/shorts-audio/short3-sfx-cannon.mp3",
-      audioVolume: 0.7,
+      audioVolume: 0.182,
       audioStartSeconds: 1.6,
     },
     {
@@ -673,14 +686,14 @@ export const short3ClimaxFixture: ExplainerProps = {
     { word: "comentarios.", startMs: 30960, endMs: 31360 },
   ],
   audio: {
-    narration: { src: "video003/shorts-audio/short3-narration.mp3", volume: 1.0 },
+    narration: { src: "video003/shorts-audio/short3-narration.mp3", volume: 1.7989 },
     music: {
       src: "video003/shorts-audio/short3-music.mp3",
-      volume: 0.35,
+      volume: 0.0776,
       fadeInSeconds: 0.5,
       fadeOutSeconds: 1.0,
     },
-    sfx: { src: "video003/shorts-audio/short3-sfx-camp.mp3", volume: 0.2 },
+    sfx: { src: "video003/shorts-audio/short3-sfx-camp.mp3", volume: 0.1778 },
   },
 };
 
@@ -705,7 +718,7 @@ export const short4RevelacionFixture: ExplainerProps = {
       transition_out: "cut",
       transition_duration: 0.5,
       audioSrc: "video003/shorts-audio/short4-sfx-clock.mp3",
-      audioVolume: 0.4,
+      audioVolume: 0.1778,
       audioStartSeconds: 0.5,
     },
     {
@@ -719,7 +732,7 @@ export const short4RevelacionFixture: ExplainerProps = {
       transition_out: "cut",
       transition_duration: 0.5,
       audioSrc: "video003/shorts-audio/short4-sfx-whoosh.mp3",
-      audioVolume: 0.5,
+      audioVolume: 0.1778,
     },
     {
       id: "5d",
@@ -934,10 +947,10 @@ export const short4RevelacionFixture: ExplainerProps = {
     { word: "así.", startMs: 41440, endMs: 41640 },
   ],
   audio: {
-    narration: { src: "video003/shorts-audio/short4-narration.mp3", volume: 1.0 },
+    narration: { src: "video003/shorts-audio/short4-narration.mp3", volume: 1.4791 },
     music: {
       src: "video003/shorts-audio/short4-music.mp3",
-      volume: 0.35,
+      volume: 0.0912,
       fadeInSeconds: 0.5,
       fadeOutSeconds: 1.0,
     },
