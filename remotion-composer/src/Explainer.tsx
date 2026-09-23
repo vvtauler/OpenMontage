@@ -250,6 +250,12 @@ interface Cut {
     // whole cut, no animated growth (1 = no zoom, the default everywhere
     // video is used).
     scale?: number;
+    // Escala de partida del zoom-in de imagen (por defecto 1): el zoom va
+    // de startScale a scale en vez de arrancar siempre desde 1.
+    startScale?: number;
+    // Fundido cruzado lineal de entrada (segundos) sobre el corte anterior,
+    // que debe seguir en pantalla debajo (su out_seconds cubre este corte).
+    crossfadeIn?: number;
     position?: string | { x: number; y: number };
     // Ancla del zoom de la animación de la propia imagen (ken-burns,
     // zoom-in, ...) — CSS transform-origin, p. ej. "50% 100%" para que el
@@ -362,6 +368,10 @@ export interface ExplainerProps {
   cuts: Cut[];
   overlays?: Overlay[];
   captions?: WordCaption[];
+  /** Passed straight through to CaptionOverlay — see its own doc. Default
+   * (unset/false) keeps every existing composition on the fixed 6-word
+   * paging it always had. */
+  captionsPhraseAware?: boolean;
   audio?: AudioConfig;
   /** Isotipo del canal, persistente durante toda la composición — mismo
    * tratamiento que en los shorts de vídeo 1 (vía SocialClip). Opt-in: sin
@@ -460,6 +470,10 @@ const ImageScene: React.FC<{
    * Other animations (pan-*, ken-burns, ...) keep their own fixed
    * amplitude regardless of this prop. */
   zoomScale?: number;
+  /** Scale at the start of "zoom-in" (default 1). */
+  zoomStart?: number;
+  /** Linear crossfade-in over the cut underneath, in seconds (0 = off). */
+  crossfadeSeconds?: number;
 }> = ({
   src,
   animation,
@@ -469,9 +483,12 @@ const ImageScene: React.FC<{
   zoomOrigin,
   backgroundColor = "#0F172A",
   zoomScale,
+  zoomStart = 1,
+  crossfadeSeconds = 0,
 }) => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
+  const crossfadeFrames = Math.round(crossfadeSeconds * fps);
 
   const hardIn = ["cut", "none"].includes((transitionIn || "").toLowerCase());
   const hardOut = ["cut", "none"].includes((transitionOut || "").toLowerCase());
@@ -505,7 +522,7 @@ const ImageScene: React.FC<{
   // alongside translate so the wider pan/drift never reveals the image edge.
   const zoomAmplitude = zoomScale !== undefined ? zoomScale - 1 : 0.28;
   if (anim === "zoom-in") {
-    scale = 1 + progress * zoomAmplitude;
+    scale = zoomStart + progress * (1 + zoomAmplitude - zoomStart);
   } else if (anim === "zoom-out") {
     scale = 1 + zoomAmplitude - progress * zoomAmplitude;
   } else if (anim === "pan-left") {
@@ -528,6 +545,16 @@ const ImageScene: React.FC<{
     // motion at all (unrecognized keyword), leaving the cut static.
     translateY = interpolate(progress, [0, 1], [26, -26]);
     scale = 1.08 + progress * 0.08;
+  } else if (anim === "sweep-right" || anim === "sweep-left") {
+    // Barrido completo: zoom fijo (zoomScale, por defecto 1.4) y desplazamiento
+    // de borde a borde del margen que ese zoom deja disponible (sin mostrar
+    // nunca el borde de la imagen). translate se aplica antes del scale.
+    scale = zoomScale ?? 1.4;
+    const maxShift = ((scale - 1) * 1920) / (2 * scale);
+    translateX =
+      anim === "sweep-right"
+        ? interpolate(progress, [0, 1], [maxShift, -maxShift])
+        : interpolate(progress, [0, 1], [-maxShift, maxShift]);
   } else if (anim === "pan-edge-left-to-right") {
     // Full edge-to-edge sweep of the "cover" crop window itself — starts
     // showing the image's left margin (object-position 0%), ends showing
@@ -540,21 +567,36 @@ const ImageScene: React.FC<{
   // "static" or "none" → just display
 
   return (
-    <AbsoluteFill style={{ overflow: "hidden", background: backgroundColor }}>
+    <AbsoluteFill
+      style={{
+        overflow: "hidden",
+        background: crossfadeFrames > 0 ? "transparent" : backgroundColor,
+        opacity:
+          crossfadeFrames > 0
+            ? interpolate(frame, [0, crossfadeFrames], [0, 1], {
+                extrapolateLeft: "clamp",
+                extrapolateRight: "clamp",
+              })
+            : 1,
+      }}
+    >
       <Img
         src={resolveAsset(src)}
         style={{
           width: "100%",
           height: "100%",
           objectFit: "cover",
+
           objectPosition:
             objectPositionXOverride !== undefined
               ? `${objectPositionXOverride}% 50%`
               : resolveObjectPosition(focalPoint),
+
           opacity: fadeIn * fadeOut,
           transform: `scale(${scale}) translate(${translateX}px, ${translateY}px)`,
           transformOrigin: zoomOrigin || "50% 50%",
           willChange: "transform, opacity",
+          translate: "-2px 0px"
         }}
       />
       <Vignette />
@@ -939,6 +981,8 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
         zoomOrigin={cut.transform?.zoomOrigin}
         backgroundColor={cut.backgroundColor ?? theme.backgroundColor}
         zoomScale={cut.transform?.scale}
+        zoomStart={cut.transform?.startScale}
+        crossfadeSeconds={cut.transform?.crossfadeIn}
       />,
     );
   }
@@ -1076,7 +1120,7 @@ const OverlayRenderer: React.FC<{ overlay: Overlay }> = ({ overlay }) => {
 const CTA_BACKGROUND_LEAD_SECONDS = 1;
 
 export const Explainer: React.FC<ExplainerProps> = (props) => {
-  const { cuts, overlays, captions, audio, watermarkSrc, brandBackground } = props;
+  const { cuts, overlays, captions, captionsPhraseAware, audio, watermarkSrc, brandBackground } = props;
   const { fps, durationInFrames } = useVideoConfig();
 
   // Resolve theme from props — playbook name, theme name, or custom themeConfig
@@ -1086,13 +1130,11 @@ export const Explainer: React.FC<ExplainerProps> = (props) => {
     <AbsoluteFill style={{ background: theme.backgroundColor, fontFamily: theme.headingFont || fontFamily }}>
       {/* Layer 0: Animated gradient background — driven by theme */}
       <AnimatedBackground theme={theme} />
-
       {/* Layer 0.4: persistent brand background (fondo-limpio.jpg) for the
           whole composition — see ExplainerProps.brandBackground doc. Only
           actually visible wherever cuts don't fully cover it (e.g. a
           videoFit:"contain" cut's letterbox bars). */}
       {brandBackground && <CtaBackground />}
-
       {/* Layer 0.5: cta_card background(s), visible a beat before the cut
           officially starts — sits behind the Layer 1 loop below (painted
           first), so it only actually shows once the preceding cut's own
@@ -1114,7 +1156,6 @@ export const Explainer: React.FC<ExplainerProps> = (props) => {
             </Sequence>
           );
         })}
-
       {/* Layer 1: Visual scenes */}
       {cuts.map((cut) => {
         const from = Math.round(cut.in_seconds * fps);
@@ -1144,7 +1185,6 @@ export const Explainer: React.FC<ExplainerProps> = (props) => {
           </Sequence>
         );
       })}
-
       {/* Layer 2: Overlays (section titles, stat reveals, hero titles) */}
       {overlays?.map((overlay, i) => {
         const from = Math.round(overlay.in_seconds * fps);
@@ -1158,12 +1198,12 @@ export const Explainer: React.FC<ExplainerProps> = (props) => {
           </Sequence>
         );
       })}
-
       {/* Layer 3: Captions (word-by-word highlight) */}
       {captions && captions.length > 0 && (
         <CaptionOverlay
           words={captions}
           wordsPerPage={6}
+          phraseAware={captionsPhraseAware}
           fontSize={theme.captionFontSize ?? 42}
           highlightColor={theme.captionHighlightColor}
           backgroundColor={theme.captionBackgroundColor}
@@ -1171,10 +1211,8 @@ export const Explainer: React.FC<ExplainerProps> = (props) => {
           fontWeight={theme.captionFontWeight}
         />
       )}
-
       {/* Layer 3b: Isotipo del canal — persistente, opt-in vía watermarkSrc */}
       {watermarkSrc && <Watermark src={watermarkSrc} />}
-
       {/* Layer 4: Audio — narration */}
       {audio?.narration?.src && (
         <Audio
@@ -1187,7 +1225,6 @@ export const Explainer: React.FC<ExplainerProps> = (props) => {
           }
         />
       )}
-
       {/* Layer 4: Audio — sfx */}
       {audio?.sfx?.src && (
         <Audio
@@ -1200,7 +1237,6 @@ export const Explainer: React.FC<ExplainerProps> = (props) => {
           }
         />
       )}
-
       {/* Layer 4: Audio — music with offset, fade in/out, and optional loop */}
       {audio?.music?.src && (
         <Audio

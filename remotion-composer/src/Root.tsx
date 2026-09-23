@@ -30,6 +30,23 @@ import {
   short3ClimaxFixture as video003Short3,
   short4RevelacionFixture as video003Short4,
 } from "./fixtures/video003-shorts";
+import { video004 } from "./fixtures/video004";
+import { video005Fixture } from "./fixtures/video005";
+import { video006Fixture } from "./fixtures/video006";
+import {
+  short1HookFixture as video004Short1,
+  short2MecanismoFixture as video004Short2,
+  short3ClimaxFixture as video004Short3,
+  short4RevelacionFixture as video004Short4,
+} from "./fixtures/video004-shorts";
+import {
+  short1RescateFixture as video005Short1,
+  short2PruebaFixture as video005Short2,
+  short3TesoroFixture as video005Short3,
+  short4CambioFixture as video005Short4,
+  short5OroFixture as video005Short5,
+  short6SignificadoFixture as video005Short6,
+} from "./fixtures/video005-shorts";
 
 // ---------------------------------------------------------------------------
 // Theme System — prevents every video from looking like dark fintech
@@ -382,6 +399,53 @@ export const Root: React.FC = () => {
         defaultProps={video003}
         calculateMetadata={calculateMetadata}
       />
+      {/* Borrador de Fase 8 (Montaje) del video 004 - "La barca solar de
+          Keops" - cuts + narracion + musica; SFX pendiente de una pasada
+          posterior. Quitar esta composicion una vez el video este
+          renderizado y publicado. */}
+      <Composition
+        id="Artilugio-Largo-004"
+        component={Explainer}
+        durationInFrames={30 * 60}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={video004}
+        calculateMetadata={calculateMetadata}
+      />
+      {/* Borrador de Fase 8 (Montaje) del video 005 - "El disco de Nebra" -
+          cuts + narracion + musica + sfx, primer corte. Planos 10b/35a
+          arreglados (15 sept 2026): fondo Ref B -> diagrama HyperFrames
+          propio del disco (plano-10b-diagrama-disco.mp4, geometria de Ref A,
+          estilo AZUL_TECNICO/BRONCE_FORJADO del resto del video); 35a
+          reutiliza la imagen 2 (Hook) en su lugar, list_reveal anadido.
+          Pendiente de aprobacion de Victor antes de re-renderizar. Quitar
+          esta composicion una vez el video este renderizado y publicado. */}
+      <Composition
+        id="Artilugio-Largo-005"
+        component={Explainer}
+        durationInFrames={30 * 60}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={video005Fixture}
+        calculateMetadata={calculateMetadata}
+      />
+      {/* Borrador de Fase 8 (Montaje) del video 006 - "Ulfberht: la espada
+          vikinga que no era vikinga" - cuts + narracion + musica + sfx,
+          primer corte generado por Claude. Pendiente de aprobacion de
+          Victor. Quitar esta composicion una vez el video este renderizado
+          y publicado. */}
+      <Composition
+        id="Artilugio-Largo-006"
+        component={Explainer}
+        durationInFrames={30 * 60}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={video006Fixture}
+        calculateMetadata={calculateMetadata}
+      />
       <Composition
         id="Artilugio-short"
         component={Explainer}
@@ -437,6 +501,117 @@ export const Root: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={video003Short4}
+        calculateMetadata={calculateMetadata}
+      />
+      {/* Preview de los 4 shorts del video 004 (sistema v2, ver
+          10-Redes Sociales/004 - Shorts de la barca solar de Keops.md).
+          Locuciones clasificadas y primer corte montado el 6 sept 2026.
+          Primer corte para revisar en Remotion Studio -- pendiente de
+          aprobacion de Victor antes de renderizar. Quitar estas 4
+          composiciones una vez aprobadas y publicadas. */}
+      <Composition
+        id="Artilugio-short-004-1-hook"
+        component={Explainer}
+        durationInFrames={Math.ceil(46.759125 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video004Short1}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-004-2-mecanismo"
+        component={Explainer}
+        durationInFrames={Math.ceil(30.693875 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video004Short2}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-004-3-climax"
+        component={Explainer}
+        durationInFrames={Math.ceil(43.128125 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video004Short3}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-004-4-revelacion"
+        component={Explainer}
+        durationInFrames={Math.ceil(51.565714 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video004Short4}
+        calculateMetadata={calculateMetadata}
+      />
+      {/* Preview de los 6 shorts del video 005 (ver 10-Redes Sociales/005 -
+          Shorts del disco de Nebra.md). Primer corte montado el 21 sept 2026
+          para revisar en Remotion Studio -- pendiente de aprobacion de
+          Victor antes de renderizar. Quitar estas composiciones una vez
+          aprobadas y publicadas. */}
+      <Composition
+        id="Artilugio-short-005-1-rescate"
+        component={Explainer}
+        durationInFrames={Math.ceil(47.595063 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video005Short1}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-005-2-prueba"
+        component={Explainer}
+        durationInFrames={Math.ceil(37.799125 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video005Short2}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-005-3-tesoro"
+        component={Explainer}
+        durationInFrames={Math.ceil(40.280816 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video005Short3}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-005-4-cambio"
+        component={Explainer}
+        durationInFrames={Math.ceil(40.672625 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video005Short4}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-005-5-oro"
+        component={Explainer}
+        durationInFrames={Math.ceil(39.053063 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video005Short5}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-005-6-significado"
+        component={Explainer}
+        durationInFrames={Math.ceil(53.524875 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video005Short6}
         calculateMetadata={calculateMetadata}
       />
       <Composition

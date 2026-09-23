@@ -88,27 +88,75 @@ current `trimStartSeconds`/`trimEndSeconds` window into one `videoSrc`
 only fits the old single-master-trim approach and needs to become one
 case of a more general multi-cut foreground, not the only case.
 
-**Levels (video 003):** match the long-form video's own peak-dBFS
-targets, not an arbitrary guess — narration -1.0dBFS, music -25.0dBFS,
-sfx -15.0dBFS (same targets `_rebuild_narration_v2.py`,
-`_rebuild_music_v2.py`, `_mix_sfx_track.py` use in the long-form
+**Levels — narration & music (confirmed through video 004, still
+valid):** match the long-form video's own peak-dBFS targets, not an
+arbitrary guess — narration -1.0dBFS, music -25.0dBFS (same targets
+`_rebuild_narration_v2.py`/`_rebuild_music_v2.py` use in the long-form
 project folder). Measure each short's raw source file with `ffmpeg -af
-volumedetect` (`max_volume` line) and set the fixture's `volume` /
-`audioVolume` to the linear gain `10 ** ((target - measured_peak) / 20)`
-— same math those scripts' `peak_normalize()` does, just applied as a
-Remotion playback gain instead of baking a new file. A quiet ambience
-bed (as opposed to a punchy one-off cue) can compute an unusually large
-multiplier to reach -15dBFS — don't assume that's an overcorrection (or
-trust it blindly) from the formula alone. Check it against the
-long-form video's own already-published mix: measure the peak of the
-exact time window where that same cue plays in `sfx-final.mp3` (`ffmpeg
--t <duration> -af volumedetect`, i.e. only the first N seconds) and
-compare it to that file's own overall peak. If the two are close, the
-cue is genuinely meant to sit near the top of the mix in context (video
-003's `01-courtyard-birds.mp3`: raw peak -44.8dBFS → computed x30.9
-gain looked excessive, but the same cue's window in the real mix
-(0-5.56s of `sfx-final.mp3`) measures -15.1dBFS against a -13.2dBFS
-mix-wide peak — confirming the gain, not an error).
+volumedetect` (`max_volume` line) and set the fixture's `audio.narration
+.volume`/`audio.music.volume` to the linear gain
+`10 ** ((target - measured_peak) / 20)` — same math those scripts'
+`peak_normalize()` does, just applied as a Remotion playback gain
+instead of baking a new file. If the short's music source is shorter
+than the short itself (e.g. a per-block music bed reused from the
+long-form video, video 004 short 1: 31.8s bed vs. a 46.8s short), set
+`audio.music.loop: true` instead of trimming or leaving the tail
+silent — `Explainer.tsx`'s fade-in/out envelope is computed against the
+*composition's* absolute frame, not per loop iteration, so looping
+doesn't introduce an audible fade at every repeat, only at the very
+start/end of the short.
+
+**Levels — SFX (superseded 6 sept 2026, video 004): normalize by RMS
+with a reduce-only cap, not by peak.** The video-003-era method above
+(match each cue's peak to -15dBFS) produces wildly inconsistent
+*perceived* loudness once you actually check it, because different SFX
+sources have very different crest factors (peak-to-RMS ratio): a
+transient creak/hit has a high crest factor, so pushing its peak to
+-15dBFS still leaves a quiet RMS; a continuous-texture bed (electronic
+hum, museum ambience, tool ambience) has a low crest factor, so the
+*same* peak target leaves its RMS 10-20dB hotter than a creak's — it
+reads as "too present" / "annoying" even though the peak number looks
+identical and correct on paper. Measured on video 004 short 4's plano
+6b (`12-lab-electronic-hum.mp3`): peak-matched to -15dBFS put its RMS
+at only -26.8dBFS while the narration's own RMS at that same on-screen
+moment was -19.9dBFS — just 6dB of separation, audibly competing with
+the voice.
+
+**Correct process (do this per short, not once globally):**
+1. For every `(short, plano, cue)` combo, cut the raw cue to the
+   *plano's exact on-screen duration* first — this is a real file on
+   disk (`<short>-sfx-<plano>.mp3`), not a shared file played through a
+   generic `audioVolume` multiplier, because step 4 needs a duration to
+   fade against. If the raw cue is shorter than that duration (loop
+   `ffmpeg -stream_loop -1 -i cue.mp3 -t <duration>`) instead of letting
+   the rest of the plano go silent.
+2. Apply a 1.0s fade-in and 1.0s fade-out (`afade=t=in:d=1.0` /
+   `afade=t=out:st=<duration-1.0>:d=1.0`) so the cue never starts/stops
+   on a hard edge at the cut boundary. (Started at 0.25s, raised to
+   1.0s in video 004 after it still read as an abrupt cut.)
+3. Measure the trimmed+faded clip's **RMS**, not peak
+   (`ffmpeg -af volumedetect` → `mean_volume` line, not `max_volume`).
+4. Compute `delta = min(0, TARGET_RMS_DBFS - measured_rms)` — a cap,
+   never a boost — and re-render the same trim+fade with
+   `volume=<delta>dB` added to the filter chain. `TARGET_RMS_DBFS`
+   around **-38 to -44dBFS** is the range that worked for video 004
+   (start at -38, go lower — e.g. -44 — if it still reads as present
+   once you do step 5). Set the fixture's `audioVolume` to `1.0`: the
+   gain is already baked into the processed file, don't apply it twice.
+5. **Verify with an actual scene-by-scene measurement, not track-level
+   peaks in isolation.** Build the real mixdown per short — narration
+   at its own gain, music with its full fade-in/out envelope over the
+   *whole short's* duration (not per-cut), and every plano's SFX at its
+   real offset — via an `ffmpeg amix` (narration + music + a silence
+   track with each SFX clip `adelay`'d into place), then for every cut
+   extract a ~0.5s window centered on `(in_seconds + out_seconds) / 2`
+   from the narration-only, music-only, sfx-only and full-mix renders
+   and read each one's `mean_volume`. This is what actually caught the
+   6dB-of-separation problem above — the isolated-file peak numbers all
+   looked correct in isolation. Target: SFX RMS at least ~15dB under
+   narration RMS at that same instant, across every plano that has one.
+   For video 004 this needed two passes (-38dBFS cap, then -44dBFS cap)
+   before the gap was consistently 17-25dB everywhere.
 
 ### 4. Hook rules (0-3s)
 

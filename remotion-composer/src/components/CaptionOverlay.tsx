@@ -21,12 +21,26 @@ export interface WordCaption {
   word: string;
   startMs: number;
   endMs: number;
+  /** phraseAware mode only (see below) — marks this word as the last one of
+   * a caption page. Computed upstream from punctuation (sentence end always
+   * breaks; a comma breaks once the running page has >=2 words, so a page
+   * never starts or ends mid-phrase) — this component does not parse text,
+   * it only reads the flag, so callers stay in full control of where a
+   * clause is "long enough" to break. */
+  pageBreakAfter?: boolean;
 }
 
 type CaptionOverlayProps = {
   words: WordCaption[];
   // How many words to show at once in a "page"
   wordsPerPage?: number;
+  /** When true, ignores wordsPerPage and pages instead break exactly where
+   * words[].pageBreakAfter is set — every page then starts and ends on a
+   * real phrase/clause boundary instead of a fixed word count (video005
+   * shorts, 23 sept 2026: fixed-count pages were cutting mid-sentence).
+   * Default false keeps the original wordsPerPage behavior for every
+   * caller that doesn't set this (001/003/004/video005 largo, ...). */
+  phraseAware?: boolean;
   fontSize?: number;
   color?: string;
   highlightColor?: string;
@@ -58,6 +72,30 @@ function buildPages(words: WordCaption[], wordsPerPage: number): CaptionPage[] {
       words: pageWords,
       startMs: pageWords[0].startMs,
       endMs: pageWords[pageWords.length - 1].endMs,
+    });
+  }
+  return pages;
+}
+
+function buildPhrasePages(words: WordCaption[]): CaptionPage[] {
+  const pages: CaptionPage[] = [];
+  let current: WordCaption[] = [];
+  for (const w of words) {
+    current.push(w);
+    if (w.pageBreakAfter) {
+      pages.push({
+        words: current,
+        startMs: current[0].startMs,
+        endMs: current[current.length - 1].endMs,
+      });
+      current = [];
+    }
+  }
+  if (current.length > 0) {
+    pages.push({
+      words: current,
+      startMs: current[0].startMs,
+      endMs: current[current.length - 1].endMs,
     });
   }
   return pages;
@@ -172,6 +210,7 @@ const PageRenderer: React.FC<{
 export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
   words,
   wordsPerPage = 6,
+  phraseAware = false,
   fontSize = 42,
   color = "#F8FAFC",
   highlightColor = "#22D3EE",
@@ -182,7 +221,7 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
   verticalOffsetPx = 0,
 }) => {
   const { fps } = useVideoConfig();
-  const pages = buildPages(words, wordsPerPage);
+  const pages = phraseAware ? buildPhrasePages(words) : buildPages(words, wordsPerPage);
 
   return (
     <AbsoluteFill>
