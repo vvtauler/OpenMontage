@@ -228,7 +228,7 @@ export const short1RescateFixture: ExplainerProps = {
       "word": "punto",
       "startMs": 1380,
       "endMs": 1500,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "de",
@@ -258,7 +258,7 @@ export const short1RescateFixture: ExplainerProps = {
       "word": "en",
       "startMs": 2800,
       "endMs": 3020,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "el",
@@ -318,7 +318,7 @@ export const short1RescateFixture: ExplainerProps = {
       "word": "ilegalmente",
       "startMs": 8020,
       "endMs": 8640,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "con",
@@ -348,7 +348,7 @@ export const short1RescateFixture: ExplainerProps = {
       "word": "en",
       "startMs": 9780,
       "endMs": 9980,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "un",
@@ -414,7 +414,7 @@ export const short1RescateFixture: ExplainerProps = {
       "word": "desenterrado",
       "startMs": 13540,
       "endMs": 14220,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "una",
@@ -444,7 +444,7 @@ export const short1RescateFixture: ExplainerProps = {
       "word": "Edad",
       "startMs": 15100,
       "endMs": 15320,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "del",
@@ -486,7 +486,7 @@ export const short1RescateFixture: ExplainerProps = {
       "word": "más",
       "startMs": 17420,
       "endMs": 17640,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "de",
@@ -534,7 +534,7 @@ export const short1RescateFixture: ExplainerProps = {
       "word": "tres",
       "startMs": 20840,
       "endMs": 21060,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "años",
@@ -564,13 +564,13 @@ export const short1RescateFixture: ExplainerProps = {
       "word": "mercado",
       "startMs": 22200,
       "endMs": 22500,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "negro,",
       "startMs": 22500,
       "endMs": 23260,
-      "pageBreakAfter": true
+      "pageBreakAfter": false
     },
     {
       "word": "lejos",
@@ -594,7 +594,7 @@ export const short1RescateFixture: ExplainerProps = {
       "word": "y",
       "startMs": 24240,
       "endMs": 24340,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "museos.",
@@ -642,13 +642,13 @@ export const short1RescateFixture: ExplainerProps = {
       "word": "de",
       "startMs": 27120,
       "endMs": 27220,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "2002,",
       "startMs": 27220,
       "endMs": 27870,
-      "pageBreakAfter": true
+      "pageBreakAfter": false
     },
     {
       "word": "la",
@@ -672,7 +672,7 @@ export const short1RescateFixture: ExplainerProps = {
       "word": "organizó",
       "startMs": 29120,
       "endMs": 29600,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "una",
@@ -702,7 +702,7 @@ export const short1RescateFixture: ExplainerProps = {
       "word": "un",
       "startMs": 30860,
       "endMs": 30960,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "hotel",
@@ -750,7 +750,7 @@ export const short1RescateFixture: ExplainerProps = {
       "word": "de",
       "startMs": 33500,
       "endMs": 33620,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "Nebra.",
@@ -786,7 +786,7 @@ export const short1RescateFixture: ExplainerProps = {
       "word": "suelo",
       "startMs": 35920,
       "endMs": 36260,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "y",
@@ -816,7 +816,7 @@ export const short1RescateFixture: ExplainerProps = {
       "word": "confirmaron",
       "startMs": 37260,
       "endMs": 38100,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "su",
@@ -870,7 +870,7 @@ export const short1RescateFixture: ExplainerProps = {
       "word": "no",
       "startMs": 40600,
       "endMs": 40820,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "se",
@@ -954,7 +954,7 @@ export const short1RescateFixture: ExplainerProps = {
       "word": "exactamente",
       "startMs": 45960,
       "endMs": 46360,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "de",
@@ -982,7 +982,7 @@ export const short1RescateFixture: ExplainerProps = {
     },
     "music": {
       "src": "video005/shorts-audio/short1-music.mp3",
-      "volume": 0.7499,
+      "volume": 0.0923,
       "fadeInSeconds": 0.5,
       "fadeOutSeconds": 1.0,
       "loop": true
@@ -1132,7 +1132,7 @@ export const short2PruebaFixture: ExplainerProps = {
       "word": "se",
       "startMs": 980,
       "endMs": 1200,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "hubieran",
@@ -1162,7 +1162,7 @@ export const short2PruebaFixture: ExplainerProps = {
       "word": "donde",
       "startMs": 2280,
       "endMs": 2520,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "encontraron",
@@ -1252,7 +1252,7 @@ export const short2PruebaFixture: ExplainerProps = {
       "word": "punto",
       "startMs": 8020,
       "endMs": 8240,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "exacto",
@@ -1312,13 +1312,13 @@ export const short2PruebaFixture: ExplainerProps = {
       "word": "primera",
       "startMs": 11560,
       "endMs": 11840,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "pista,",
       "startMs": 11840,
       "endMs": 12720,
-      "pageBreakAfter": true
+      "pageBreakAfter": false
     },
     {
       "word": "fragmentos",
@@ -1342,7 +1342,7 @@ export const short2PruebaFixture: ExplainerProps = {
       "word": "botella",
       "startMs": 13700,
       "endMs": 14020,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "rota",
@@ -1402,7 +1402,7 @@ export const short2PruebaFixture: ExplainerProps = {
       "word": "la",
       "startMs": 17420,
       "endMs": 17520,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "pared",
@@ -1450,7 +1450,7 @@ export const short2PruebaFixture: ExplainerProps = {
       "word": "piqueta",
       "startMs": 19600,
       "endMs": 19940,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "utilizada",
@@ -1510,7 +1510,7 @@ export const short2PruebaFixture: ExplainerProps = {
       "word": "poderosa",
       "startMs": 22880,
       "endMs": 23320,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "estaba",
@@ -1564,7 +1564,7 @@ export const short2PruebaFixture: ExplainerProps = {
       "word": "disco",
       "startMs": 25880,
       "endMs": 26180,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "coincidía",
@@ -1594,7 +1594,7 @@ export const short2PruebaFixture: ExplainerProps = {
       "word": "del",
       "startMs": 27720,
       "endMs": 27920,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "Mittelberg.",
@@ -1630,7 +1630,7 @@ export const short2PruebaFixture: ExplainerProps = {
       "word": "había",
       "startMs": 30000,
       "endMs": 30260,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "sido",
@@ -1672,7 +1672,7 @@ export const short2PruebaFixture: ExplainerProps = {
       "word": "su",
       "startMs": 32940,
       "endMs": 33060,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "historia.",
@@ -1738,7 +1738,7 @@ export const short2PruebaFixture: ExplainerProps = {
       "word": "al",
       "startMs": 36900,
       "endMs": 37140,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "disco.",
@@ -1905,7 +1905,7 @@ export const short3TesoroFixture: ExplainerProps = {
       "word": "no",
       "startMs": 820,
       "endMs": 1240,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "fue",
@@ -1989,7 +1989,7 @@ export const short3TesoroFixture: ExplainerProps = {
       "word": "en",
       "startMs": 6700,
       "endMs": 6840,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "una",
@@ -2019,7 +2019,7 @@ export const short3TesoroFixture: ExplainerProps = {
       "word": "cima",
       "startMs": 7500,
       "endMs": 7720,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "del",
@@ -2115,7 +2115,7 @@ export const short3TesoroFixture: ExplainerProps = {
       "word": "dos",
       "startMs": 14500,
       "endMs": 14720,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "espadas",
@@ -2145,7 +2145,7 @@ export const short3TesoroFixture: ExplainerProps = {
       "word": "empuñaduras",
       "startMs": 15780,
       "endMs": 16340,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "decoradas",
@@ -2217,7 +2217,7 @@ export const short3TesoroFixture: ExplainerProps = {
       "word": "brazaletes",
       "startMs": 20400,
       "endMs": 20860,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "en",
@@ -2259,7 +2259,7 @@ export const short3TesoroFixture: ExplainerProps = {
       "word": "depósito",
       "startMs": 22840,
       "endMs": 23240,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "cerrado",
@@ -2289,7 +2289,7 @@ export const short3TesoroFixture: ExplainerProps = {
       "word": "cultura",
       "startMs": 24660,
       "endMs": 24920,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "de",
@@ -2331,7 +2331,7 @@ export const short3TesoroFixture: ExplainerProps = {
       "word": "edad",
       "startMs": 26720,
       "endMs": 26960,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "del",
@@ -2427,7 +2427,7 @@ export const short3TesoroFixture: ExplainerProps = {
       "word": "de",
       "startMs": 33760,
       "endMs": 33900,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "los",
@@ -2517,7 +2517,7 @@ export const short3TesoroFixture: ExplainerProps = {
       "word": "no",
       "startMs": 38440,
       "endMs": 38600,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "se",
@@ -2547,7 +2547,7 @@ export const short3TesoroFixture: ExplainerProps = {
       "word": "sola",
       "startMs": 39400,
       "endMs": 39600,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "vez?",
@@ -2691,7 +2691,7 @@ export const short4CambioFixture: ExplainerProps = {
       "word": "no",
       "startMs": 820,
       "endMs": 1160,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "nació",
@@ -2775,7 +2775,7 @@ export const short4CambioFixture: ExplainerProps = {
       "word": "fondo",
       "startMs": 5340,
       "endMs": 5540,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "de",
@@ -2841,7 +2841,7 @@ export const short4CambioFixture: ExplainerProps = {
       "word": "un",
       "startMs": 9260,
       "endMs": 9400,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "conjunto",
@@ -2889,7 +2889,7 @@ export const short4CambioFixture: ExplainerProps = {
       "word": "dorados",
       "startMs": 12440,
       "endMs": 12820,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "en",
@@ -2937,7 +2937,7 @@ export const short4CambioFixture: ExplainerProps = {
       "word": "del",
       "startMs": 15220,
       "endMs": 15400,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "sol",
@@ -2991,7 +2991,7 @@ export const short4CambioFixture: ExplainerProps = {
       "word": "arco",
       "startMs": 18780,
       "endMs": 19080,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "curvado",
@@ -3039,7 +3039,7 @@ export const short4CambioFixture: ExplainerProps = {
       "word": "barca",
       "startMs": 22280,
       "endMs": 22600,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "solar.",
@@ -3075,7 +3075,7 @@ export const short4CambioFixture: ExplainerProps = {
       "word": "agujeros",
       "startMs": 25100,
       "endMs": 25840,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "alrededor",
@@ -3123,7 +3123,7 @@ export const short4CambioFixture: ExplainerProps = {
       "word": "un",
       "startMs": 28240,
       "endMs": 28360,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "soporte.",
@@ -3189,7 +3189,7 @@ export const short4CambioFixture: ExplainerProps = {
       "word": "varias",
       "startMs": 32220,
       "endMs": 32480,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "generaciones",
@@ -3219,7 +3219,7 @@ export const short4CambioFixture: ExplainerProps = {
       "word": "necesidades",
       "startMs": 33860,
       "endMs": 34480,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "y",
@@ -3291,7 +3291,7 @@ export const short4CambioFixture: ExplainerProps = {
       "word": "oro",
       "startMs": 38640,
       "endMs": 38820,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "y",
@@ -3321,7 +3321,7 @@ export const short4CambioFixture: ExplainerProps = {
       "word": "este",
       "startMs": 39780,
       "endMs": 39960,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "disco.",
@@ -3378,7 +3378,10 @@ export const short5OroFixture: ExplainerProps = {
       "videoFit": "contain",
       "transition_in": "cut",
       "transition_out": "cut",
-      "transition_duration": 0.5
+      "transition_duration": 0.5,
+      "transform": {
+        "scale": 1.15
+      }
     },
     {
       "id": "mapa-mitterberg",
@@ -3389,7 +3392,10 @@ export const short5OroFixture: ExplainerProps = {
       "videoFit": "contain",
       "transition_in": "cut",
       "transition_out": "cut",
-      "transition_duration": 0.5
+      "transition_duration": 0.5,
+      "transform": {
+        "scale": 1.3
+      }
     },
     {
       "id": "mapa-red",
@@ -3400,7 +3406,10 @@ export const short5OroFixture: ExplainerProps = {
       "videoFit": "contain",
       "transition_in": "cut",
       "transition_out": "cut",
-      "transition_duration": 0.5
+      "transition_duration": 0.5,
+      "transform": {
+        "scale": 1.15
+      }
     },
     {
       "id": "34d",
@@ -3489,7 +3498,7 @@ export const short5OroFixture: ExplainerProps = {
       "word": "de",
       "startMs": 780,
       "endMs": 920,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "Nebra",
@@ -3519,7 +3528,7 @@ export const short5OroFixture: ExplainerProps = {
       "word": "la",
       "startMs": 1700,
       "endMs": 1800,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "zona",
@@ -3609,7 +3618,7 @@ export const short5OroFixture: ExplainerProps = {
       "word": "del",
       "startMs": 8520,
       "endMs": 8720,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "río",
@@ -3639,7 +3648,7 @@ export const short5OroFixture: ExplainerProps = {
       "word": "para",
       "startMs": 10420,
       "endMs": 11000,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "decorar",
@@ -3687,7 +3696,7 @@ export const short5OroFixture: ExplainerProps = {
       "word": "fue",
       "startMs": 13340,
       "endMs": 13580,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "el",
@@ -3717,7 +3726,7 @@ export const short5OroFixture: ExplainerProps = {
       "word": "recorrió",
       "startMs": 14620,
       "endMs": 15040,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "largas",
@@ -3759,7 +3768,7 @@ export const short5OroFixture: ExplainerProps = {
       "word": "procede",
       "startMs": 17560,
       "endMs": 18100,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "de",
@@ -3789,7 +3798,7 @@ export const short5OroFixture: ExplainerProps = {
       "word": "Mitterberg",
       "startMs": 18780,
       "endMs": 19280,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "en",
@@ -3843,7 +3852,7 @@ export const short5OroFixture: ExplainerProps = {
       "word": "disco",
       "startMs": 22500,
       "endMs": 22780,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "reunió",
@@ -3873,7 +3882,7 @@ export const short5OroFixture: ExplainerProps = {
       "word": "regiones",
       "startMs": 24840,
       "endMs": 25240,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "separadas",
@@ -3933,7 +3942,7 @@ export const short5OroFixture: ExplainerProps = {
       "word": "Edad",
       "startMs": 27980,
       "endMs": 28220,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "del",
@@ -3963,7 +3972,7 @@ export const short5OroFixture: ExplainerProps = {
       "word": "un",
       "startMs": 29380,
       "endMs": 29540,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "mundo",
@@ -4005,7 +4014,7 @@ export const short5OroFixture: ExplainerProps = {
       "word": "las",
       "startMs": 31880,
       "endMs": 32020,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "ideas",
@@ -4035,7 +4044,7 @@ export const short5OroFixture: ExplainerProps = {
       "word": "el",
       "startMs": 33520,
       "endMs": 33620,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "continente.",
@@ -4101,7 +4110,7 @@ export const short5OroFixture: ExplainerProps = {
       "word": "ante",
       "startMs": 37420,
       "endMs": 37760,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "un",
@@ -4151,8 +4160,8 @@ export const short5OroFixture: ExplainerProps = {
 export const short6SignificadoFixture: ExplainerProps = {
   "cuts": [
     {
-      "id": "34d-open",
-      "source": "video005/images/34d.png",
+      "id": "26-open",
+      "source": "video005/images/26.png",
       "in_seconds": 0.0,
       "out_seconds": 6.2,
       "transition_in": "cut",
@@ -4252,8 +4261,8 @@ export const short6SignificadoFixture: ExplainerProps = {
       }
     },
     {
-      "id": "34d-close",
-      "source": "video005/images/34d.png",
+      "id": "31-close",
+      "source": "video005/images/31.png",
       "in_seconds": 42.7,
       "out_seconds": 45.5,
       "transition_in": "cut",
@@ -4273,16 +4282,11 @@ export const short6SignificadoFixture: ExplainerProps = {
   ],
   "overlays": [
     {
-      "type": "impact_stamp",
+      "type": "monumental_title",
       "in_seconds": 0.6,
-      "out_seconds": 2.0,
-      "text": "MAPA DEL CIELO"
-    },
-    {
-      "type": "impact_stamp",
-      "in_seconds": 3.2,
       "out_seconds": 4.6,
-      "text": "¿CALENDARIO?"
+      "position": "center",
+      "text": "¿MAPA O\nCALENDARIO?"
     },
     {
       "type": "monumental_title",
@@ -4325,7 +4329,7 @@ export const short6SignificadoFixture: ExplainerProps = {
       "word": "dicho",
       "startMs": 1060,
       "endMs": 1260,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "que",
@@ -4355,7 +4359,7 @@ export const short6SignificadoFixture: ExplainerProps = {
       "word": "mapa",
       "startMs": 2000,
       "endMs": 2180,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "del",
@@ -4385,13 +4389,13 @@ export const short6SignificadoFixture: ExplainerProps = {
       "word": "del",
       "startMs": 3420,
       "endMs": 3560,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "mundo,",
       "startMs": 3560,
       "endMs": 4220,
-      "pageBreakAfter": true
+      "pageBreakAfter": false
     },
     {
       "word": "pero",
@@ -4415,7 +4419,7 @@ export const short6SignificadoFixture: ExplainerProps = {
       "word": "es",
       "startMs": 4960,
       "endMs": 5280,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "más",
@@ -4457,7 +4461,7 @@ export const short6SignificadoFixture: ExplainerProps = {
       "word": "estrellas",
       "startMs": 7500,
       "endMs": 8060,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "suele",
@@ -4517,7 +4521,7 @@ export const short6SignificadoFixture: ExplainerProps = {
       "word": "que",
       "startMs": 11360,
       "endMs": 11500,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "pudo",
@@ -4547,7 +4551,7 @@ export const short6SignificadoFixture: ExplainerProps = {
       "word": "para",
       "startMs": 13000,
       "endMs": 13520,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "organizar",
@@ -4601,7 +4605,7 @@ export const short6SignificadoFixture: ExplainerProps = {
       "word": "abarcan",
       "startMs": 17240,
       "endMs": 17960,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "unos",
@@ -4649,7 +4653,7 @@ export const short6SignificadoFixture: ExplainerProps = {
       "word": "sol",
       "startMs": 21500,
       "endMs": 21700,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "en",
@@ -4679,7 +4683,7 @@ export const short6SignificadoFixture: ExplainerProps = {
       "word": "los",
       "startMs": 22800,
       "endMs": 22980,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "solsticios.",
@@ -4727,7 +4731,7 @@ export const short6SignificadoFixture: ExplainerProps = {
       "word": "ayudaba",
       "startMs": 26440,
       "endMs": 26820,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "a",
@@ -4757,7 +4761,7 @@ export const short6SignificadoFixture: ExplainerProps = {
       "word": "de",
       "startMs": 27860,
       "endMs": 28000,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "la",
@@ -4829,7 +4833,7 @@ export const short6SignificadoFixture: ExplainerProps = {
       "word": "carta",
       "startMs": 31200,
       "endMs": 31420,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "de",
@@ -4859,7 +4863,7 @@ export const short6SignificadoFixture: ExplainerProps = {
       "word": "estrella",
       "startMs": 32620,
       "endMs": 33100,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "corresponda",
@@ -4889,7 +4893,7 @@ export const short6SignificadoFixture: ExplainerProps = {
       "word": "estrella",
       "startMs": 34820,
       "endMs": 35220,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "real.",
@@ -5003,7 +5007,7 @@ export const short6SignificadoFixture: ExplainerProps = {
       "word": "convirtió",
       "startMs": 43660,
       "endMs": 44220,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "el",
@@ -5057,7 +5061,7 @@ export const short6SignificadoFixture: ExplainerProps = {
       "word": "más",
       "startMs": 46720,
       "endMs": 46920,
-      "pageBreakAfter": false
+      "pageBreakAfter": true
     },
     {
       "word": "objetos",
