@@ -30,6 +30,7 @@ import type { ParallaxLayer, ParallaxMotion } from "./components/ParallaxScene";
 import { ListReveal } from "./components/ListReveal";
 import type { ListRevealItem } from "./components/ListReveal";
 import { PhotoInsert } from "./components/PhotoInsert";
+import { VideoInset } from "./components/VideoInset";
 import { MonumentalTitle } from "./components/MonumentalTitle";
 import { Rotulo } from "./components/Rotulo";
 import { ImpactStamp } from "./components/ImpactStamp";
@@ -306,7 +307,7 @@ interface Cut {
 }
 
 interface Overlay {
-  type: "section_title" | "stat_reveal" | "hero_title" | "provider_chip" | "list_reveal" | "photo_insert" | "monumental_title" | "rotulo" | "impact_stamp";
+  type: "section_title" | "stat_reveal" | "hero_title" | "provider_chip" | "list_reveal" | "photo_insert" | "monumental_title" | "rotulo" | "impact_stamp" | "video_inset";
   in_seconds: number;
   out_seconds: number;
   text?: string;
@@ -1092,6 +1093,16 @@ const OverlayRenderer: React.FC<{ overlay: Overlay }> = ({ overlay }) => {
         subtext={overlay.subtitle}
         iconSrc={overlay.iconSrc}
         position={(overlay.position as "bottom-left" | "bottom-center" | "top-left" | "center") || "bottom-center"}
+        sceneDurationSeconds={overlay.out_seconds - overlay.in_seconds}
+      />
+    );
+  }
+  if (overlay.type === "video_inset" && overlay.source) {
+    return (
+      <VideoInset
+        source={overlay.source}
+        position={(overlay.position as "top-left" | "top-right" | "bottom-left" | "bottom-right") || "top-left"}
+        width={overlay.width}
         sceneDurationSeconds={overlay.out_seconds - overlay.in_seconds}
       />
     );
