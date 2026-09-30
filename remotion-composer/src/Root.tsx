@@ -55,6 +55,13 @@ import {
   short4EmbargoFixture as video006Short4,
   short5TumbasFixture as video006Short5,
 } from "./fixtures/video006-shorts";
+import {
+  short1OroFixture as video007Short1,
+  short2NiquelFixture as video007Short2,
+  short3ForjaFixture as video007Short3,
+  short4MitanniFixture as video007Short4,
+  short5CieloFixture as video007Short5,
+} from "./fixtures/video007-shorts";
 
 // ---------------------------------------------------------------------------
 // Theme System — prevents every video from looking like dark fintech
@@ -686,6 +693,60 @@ export const Root: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={video006Short5}
+        calculateMetadata={calculateMetadata}
+      />
+      {/* Preview de los 5 shorts del video 007 (ver 10-Redes Sociales/007 -
+          Shorts de la daga de Tutankamon.md). Primer corte montado el 29 sept
+          2026 para revisar en Remotion Studio -- pendiente de aprobacion de
+          Victor antes de renderizar. */}
+      <Composition
+        id="Artilugio-short-007-1-oro"
+        component={Explainer}
+        durationInFrames={Math.ceil(34.45551 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video007Short1}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-007-2-niquel"
+        component={Explainer}
+        durationInFrames={Math.ceil(36.179563 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video007Short2}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-007-3-forja"
+        component={Explainer}
+        durationInFrames={Math.ceil(36.623673 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video007Short3}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-007-4-mitanni"
+        component={Explainer}
+        durationInFrames={Math.ceil(41.613061 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video007Short4}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-007-5-cielo"
+        component={Explainer}
+        durationInFrames={Math.ceil(41.273438 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video007Short5}
         calculateMetadata={calculateMetadata}
       />
       <Composition
