@@ -47,6 +47,13 @@ import {
   short5OroFixture as video005Short5,
   short6SignificadoFixture as video005Short6,
 } from "./fixtures/video005-shorts";
+import {
+  short1GrafiaFixture as video006Short1,
+  short2PesoFixture as video006Short2,
+  short3AceroFixture as video006Short3,
+  short4EmbargoFixture as video006Short4,
+  short5TumbasFixture as video006Short5,
+} from "./fixtures/video006-shorts";
 
 // ---------------------------------------------------------------------------
 // Theme System — prevents every video from looking like dark fintech
@@ -612,6 +619,60 @@ export const Root: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={video005Short6}
+        calculateMetadata={calculateMetadata}
+      />
+      {/* Preview de los 5 shorts del video 006 (ver 10-Redes Sociales/006 -
+          Shorts de la espada Ulfberht.md). Primer corte montado el 25 sept
+          2026 para revisar en Remotion Studio -- pendiente de aprobacion de
+          Victor antes de renderizar. */}
+      <Composition
+        id="Artilugio-short-006-1-grafia"
+        component={Explainer}
+        durationInFrames={Math.ceil(35.604875 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video006Short1}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-006-2-peso"
+        component={Explainer}
+        durationInFrames={Math.ceil(34.08975 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video006Short2}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-006-3-acero"
+        component={Explainer}
+        durationInFrames={Math.ceil(38.687313 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video006Short3}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-006-4-embargo"
+        component={Explainer}
+        durationInFrames={Math.ceil(37.564063 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video006Short4}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-006-5-tumbas"
+        component={Explainer}
+        durationInFrames={Math.ceil(34.925688 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video006Short5}
         calculateMetadata={calculateMetadata}
       />
       <Composition

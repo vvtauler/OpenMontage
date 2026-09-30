@@ -43,6 +43,9 @@ export interface PhotoInsertProps {
 
 const FADE_SECONDS = 0.5;
 const SAFE_MARGIN = 90;
+const VERTICAL_SAFE_TOP = 250;
+const VERTICAL_SAFE_SIDE = 64;
+const VERTICAL_SAFE_BOTTOM = 540;
 
 export const PhotoInsert: React.FC<PhotoInsertProps> = ({
   source,
@@ -54,7 +57,7 @@ export const PhotoInsert: React.FC<PhotoInsertProps> = ({
 }) => {
   const hasFooter = Boolean(caption || attribution);
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, width: width_, height } = useVideoConfig();
   const durationInFrames = Math.round(sceneDurationSeconds * fps);
   const fadeFrames = Math.round(FADE_SECONDS * fps);
 
@@ -73,13 +76,23 @@ export const PhotoInsert: React.FC<PhotoInsertProps> = ({
   const isTop = position === "top-left" || position === "top-right";
   const translateX = interpolate(fadeIn, [0, 1], [isRight ? 50 : -50, 0]);
   const rotation = isRight ? 1.5 : -1.5;
+  // Shorts 9:16: la franja superior (barra de estado/usuario de TikTok/Reels/
+  // Shorts) y la inferior (subtitulos + iconos) no son seguras con el margen
+  // generico de 90px -- mismos valores que SocialClip.tsx/Rotulo.tsx. En 16:9
+  // no cambia nada.
+  const isVertical = height > width_;
+  const padding = isVertical
+    ? `${isTop ? VERTICAL_SAFE_TOP : SAFE_MARGIN}px ${VERTICAL_SAFE_SIDE}px ${
+        isTop ? SAFE_MARGIN : VERTICAL_SAFE_BOTTOM
+      }px`
+    : SAFE_MARGIN;
 
   return (
     <AbsoluteFill
       style={{
         justifyContent: isTop ? "flex-start" : "flex-end",
         alignItems: isRight ? "flex-end" : "flex-start",
-        padding: SAFE_MARGIN,
+        padding,
         pointerEvents: "none",
       }}
     >
