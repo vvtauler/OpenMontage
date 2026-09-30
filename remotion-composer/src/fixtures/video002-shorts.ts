@@ -2,7 +2,7 @@ import { ExplainerProps } from "../Explainer";
 
 // Shorts del vídeo 002 — "El arco compuesto que convirtió a los mongoles en un
 // imperio". Fuente: guion técnico "10-Redes Sociales/002 - Shorts del arco
-// mongol.md" (bóveda Obsidian, proyecto YouTube_Faceless). Criterio de esa
+// mongol.md" (bóveda Obsidian, proyecto Artilugio). Criterio de esa
 // nota: CERO generación nueva — solo montaje sobre narración, imágenes y
 // motion graphics YA aprobados para el vídeo largo (mismos archivos que usa
 // props/video002.json). Los recortes de audio (narration-final.mp3) se

@@ -3,7 +3,7 @@ import { ExplainerProps } from "../Explainer";
 // Shorts del vídeo 003 — "El secreto de la columna de hierro de Delhi que
 // nunca se oxida". Fuente: guion técnico "10-Redes Sociales/003 - Shorts de
 // la columna de hierro de Delhi.md" (bóveda Obsidian, proyecto
-// YouTube_Faceless), sistema v2 (ver ese documento §"Hilo narrativo de la
+// Artilugio), sistema v2 (ver ese documento §"Hilo narrativo de la
 // serie" y skills/meta/social-shorts-strategy.md en este repo).
 //
 // Diferencia clave frente a 001/002 (v1): cada short lleva narración PROPIA,

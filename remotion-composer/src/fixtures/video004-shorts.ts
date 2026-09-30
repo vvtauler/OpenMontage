@@ -2,7 +2,7 @@ import { ExplainerProps } from "../Explainer";
 
 // Shorts del video 004 - "La barca solar de Keops". Fuente: guion tecnico
 // "10-Redes Sociales/004 - Shorts de la barca solar de Keops.md" (boveda
-// Obsidian, proyecto YouTube_Faceless), sistema v2 (ver ese documento
+// Obsidian, proyecto Artilugio), sistema v2 (ver ese documento
 // §"Hilo narrativo de la serie" y skills/meta/social-shorts-strategy.md en
 // este repo) -- mismo criterio que video003-shorts.ts.
 //
