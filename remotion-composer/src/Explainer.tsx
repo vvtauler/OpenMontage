@@ -194,6 +194,7 @@ interface Cut {
   type?: string;
   // Component-specific props
   text?: string;
+  ctaStyle?: { textTop?: number; maxFontSize?: number; lastLineColor?: string }; // cta_card
   stat?: string;
   subtitle?: string;
   callout_type?: "info" | "warning" | "tip" | "quote";
@@ -774,7 +775,7 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
   // shorts close on. Self-contained (own background), not wrapped with
   // maybeWrapWithBg below since it isn't image/video content.
   if (cut.type === "cta_card") {
-    return <CtaScene text={cut.text} />;
+    return <CtaScene text={cut.text} ctaStyle={cut.ctaStyle} />;
   }
 
   // Wrap component with background video or image if specified

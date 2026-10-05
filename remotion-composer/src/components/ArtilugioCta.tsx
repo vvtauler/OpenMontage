@@ -69,16 +69,31 @@ const ArtilugioMark: React.FC = () => {
  * texto), todas al mismo fontSize — el que hace que la línea más larga
  * ocupe exactamente el 75% del ancho. Una línea vacía solo aporta el hueco
  * vertical de una línea, sin texto. */
-const CtaText: React.FC<{ text: string }> = ({ text }) => {
+// Estilo opcional del CTA (shorts del 008): textTop ancla el texto bajo el
+// wordmark en vez de centrarlo; maxFontSize limita el tamano cuando la linea
+// mas larga es corta; lastLineColor distingue la ultima linea ("Siguenos") del
+// resto. En este modo las lineas en blanco si ocupan su hueco (con un espacio
+// normal el navegador las colapsa a altura cero).
+export type CtaStyle = {
+  textTop?: number;
+  maxFontSize?: number;
+  lastLineColor?: string;
+};
+
+const CtaText: React.FC<{ text: string; ctaStyle?: CtaStyle }> = ({ text, ctaStyle }) => {
   const { width } = useVideoConfig();
   const lines = text.split("\n");
   const longestLine = lines.reduce((a, b) => (b.length > a.length ? b : a), "");
-  const fontSize = useFittedFontSize(
+  const fittedFontSize = useFittedFontSize(
     longestLine,
     montserratFontFamily,
     600,
     width * 0.75
   );
+  const fontSize = ctaStyle?.maxFontSize
+    ? Math.min(fittedFontSize, ctaStyle.maxFontSize)
+    : fittedFontSize;
+  const lastIndex = lines.length - 1;
 
   return (
     // marginTop: separación pedida por Víctor (1 sept 2026) respecto al
@@ -99,20 +114,27 @@ const CtaText: React.FC<{ text: string }> = ({ text }) => {
             fontWeight: 600,
             fontSize,
             lineHeight: 1.35,
-            color: "#C87A38", // Bronce Forjado
+            color:
+              ctaStyle?.lastLineColor && i === lastIndex
+                ? ctaStyle.lastLineColor
+                : "#C87A38", // Bronce Forjado
             textAlign: "center",
             whiteSpace: "nowrap",
             textShadow: line ? "0 2px 10px rgba(0,0,0,0.7)" : undefined,
           }}
         >
-          {line || " " /* línea en blanco: solo el hueco vertical */}
+          {line || (ctaStyle ? "\u00A0" : " ") /* línea en blanco: solo el hueco vertical */}
         </div>
       ))}
     </div>
   );
 };
 
-export const CtaCard: React.FC<{ text?: string }> = ({ text = DEFAULT_CTA_TEXT }) => {
+export const CtaCard: React.FC<{ text?: string; ctaStyle?: CtaStyle }> = ({
+  text = DEFAULT_CTA_TEXT,
+  ctaStyle,
+}) => {
+  const textTop = ctaStyle?.textTop;
   const frame = useCurrentFrame();
   const { fps, width } = useVideoConfig();
   const opacity = interpolate(frame, [0, Math.round(0.4 * fps)], [0, 1], {
@@ -147,8 +169,14 @@ export const CtaCard: React.FC<{ text?: string }> = ({ text = DEFAULT_CTA_TEXT }
         <ArtilugioMark />
       </div>
       {/* CTA — elemento independiente, centrado en toda la pantalla */}
-      <AbsoluteFill style={{ opacity, justifyContent: "center", alignItems: "center" }}>
-        <CtaText text={text} />
+      <AbsoluteFill
+        style={
+          textTop === undefined
+            ? { opacity, justifyContent: "center", alignItems: "center" }
+            : { opacity, justifyContent: "flex-start", alignItems: "center", paddingTop: textTop }
+        }
+      >
+        <CtaText text={text} ctaStyle={ctaStyle} />
       </AbsoluteFill>
     </AbsoluteFill>
   );
@@ -177,9 +205,9 @@ export const CtaBackground: React.FC = () => (
   />
 );
 
-export const CtaScene: React.FC<{ text?: string }> = ({ text }) => (
+export const CtaScene: React.FC<{ text?: string; ctaStyle?: CtaStyle }> = ({ text, ctaStyle }) => (
   <AbsoluteFill style={{ backgroundColor: "#0E0E11" }}>
     <CtaBackground />
-    <CtaCard text={text} />
+    <CtaCard text={text} ctaStyle={ctaStyle} />
   </AbsoluteFill>
 );

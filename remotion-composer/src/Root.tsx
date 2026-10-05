@@ -63,6 +63,14 @@ import {
   short4MitanniFixture as video007Short4,
   short5CieloFixture as video007Short5,
 } from "./fixtures/video007-shorts";
+import {
+  short1RayoFixture as video008Short1,
+  short2BombaFixture as video008Short2,
+  short3SecretoFixture as video008Short3,
+  short4LeyendaFixture as video008Short4,
+  short5LimitesFixture as video008Short5,
+  short6FormulaFixture as video008Short6,
+} from "./fixtures/video008-shorts";
 
 // ---------------------------------------------------------------------------
 // Theme System — prevents every video from looking like dark fintech
@@ -760,6 +768,68 @@ export const Root: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={video007Short5}
+        calculateMetadata={calculateMetadata}
+      />
+      {/* Shorts del video 008 - fuego griego (10-Redes Sociales/008 - Shorts del
+          fuego griego.md). CTA sin narrar: locucion + tarjeta de marca. */}
+      <Composition
+        id="Artilugio-short-008-1-rayo"
+        component={Explainer}
+        durationInFrames={Math.ceil(43.80325 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video008Short1}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-008-2-bomba"
+        component={Explainer}
+        durationInFrames={Math.ceil(45.24 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video008Short2}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-008-3-secreto"
+        component={Explainer}
+        durationInFrames={Math.ceil(42.784438 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video008Short3}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-008-4-leyenda"
+        component={Explainer}
+        durationInFrames={Math.ceil(42.053063 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video008Short4}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-008-5-limites"
+        component={Explainer}
+        durationInFrames={Math.ceil(42.706063 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video008Short5}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-008-6-formula"
+        component={Explainer}
+        durationInFrames={Math.ceil(46.325688 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video008Short6}
         calculateMetadata={calculateMetadata}
       />
       <Composition
