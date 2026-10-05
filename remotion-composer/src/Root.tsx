@@ -34,6 +34,7 @@ import { video004 } from "./fixtures/video004";
 import { video005Fixture } from "./fixtures/video005";
 import { video006Fixture } from "./fixtures/video006";
 import { video007Fixture } from "./fixtures/video007";
+import { video008Fixture } from "./fixtures/video008";
 import {
   short1HookFixture as video004Short1,
   short2MecanismoFixture as video004Short2,
@@ -471,6 +472,18 @@ export const Root: React.FC = () => {
         width={1920}
         height={1080}
         defaultProps={video007Fixture}
+        calculateMetadata={calculateMetadata}
+      />
+      {/* Borrador de Fase 8 (Montaje) del video 008 - "El fuego griego".
+          Pendiente de aprobacion de Victor en el visor. */}
+      <Composition
+        id="Artilugio-Largo-008"
+        component={Explainer}
+        durationInFrames={30 * 60}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={video008Fixture}
         calculateMetadata={calculateMetadata}
       />
       <Composition
