@@ -35,6 +35,7 @@ import { video005Fixture } from "./fixtures/video005";
 import { video006Fixture } from "./fixtures/video006";
 import { video007Fixture } from "./fixtures/video007";
 import { video008Fixture } from "./fixtures/video008";
+import { video009Fixture } from "./fixtures/video009";
 import {
   short1HookFixture as video004Short1,
   short2MecanismoFixture as video004Short2,
@@ -71,6 +72,14 @@ import {
   short5LimitesFixture as video008Short5,
   short6FormulaFixture as video008Short6,
 } from "./fixtures/video008-shorts";
+import {
+  short1CuencoFixture as video009Short1,
+  short2DragonFixture as video009Short2,
+  short3RobotFixture as video009Short3,
+  short4ValvulaFixture as video009Short4,
+  short5DienteFixture as video009Short5,
+  short6CopiasFixture as video009Short6,
+} from "./fixtures/video009-shorts";
 
 // ---------------------------------------------------------------------------
 // Theme System — prevents every video from looking like dark fintech
@@ -494,6 +503,18 @@ export const Root: React.FC = () => {
         defaultProps={video008Fixture}
         calculateMetadata={calculateMetadata}
       />
+      {/* Borrador de Fase 8 (Montaje) del video 009 - "El reloj-elefante de Al-Jazari".
+          Pendiente de aprobacion de Victor en el visor. */}
+      <Composition
+        id="Artilugio-Largo-009"
+        component={Explainer}
+        durationInFrames={30 * 60}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={video009Fixture}
+        calculateMetadata={calculateMetadata}
+      />
       <Composition
         id="Artilugio-short"
         component={Explainer}
@@ -830,6 +851,68 @@ export const Root: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={video008Short6}
+        calculateMetadata={calculateMetadata}
+      />
+      {/* Shorts del video 009 - reloj-elefante (10-Redes Sociales/009 - Shorts del
+          reloj-elefante de Al-Jazari.md). CTA sin narrar: locucion + tarjeta de marca. */}
+      <Composition
+        id="Artilugio-short-009-1-cuenco"
+        component={Explainer}
+        durationInFrames={Math.ceil(41.687313 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video009Short1}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-009-2-dragon"
+        component={Explainer}
+        durationInFrames={Math.ceil(41.426122 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video009Short2}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-009-3-robot"
+        component={Explainer}
+        durationInFrames={Math.ceil(44.9265 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video009Short3}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-009-4-valvula"
+        component={Explainer}
+        durationInFrames={Math.ceil(43.724875 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video009Short4}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-009-5-diente"
+        component={Explainer}
+        durationInFrames={Math.ceil(43.80325 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video009Short5}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="Artilugio-short-009-6-copias"
+        component={Explainer}
+        durationInFrames={Math.ceil(46.691375 * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={video009Short6}
         calculateMetadata={calculateMetadata}
       />
       <Composition
